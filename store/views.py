@@ -4,6 +4,8 @@ from core.models import Category
 from carts.models import CartItem
 from carts.views import _cart_id
 from django.core.paginator import PageNotAnInteger,Paginator,EmptyPage
+from django.db.models import Q
+from django.http import HttpResponse
 
 def store(request,category_slug=None):
     categories=None
@@ -43,3 +45,16 @@ def product_detail(request,category_slug,product_slug):
         "in_cart":in_cart,
     }
     return render(request , "product-detail.html",context)
+
+def search(request):
+    if 'keyword' in request.GET:
+        keyword=request.GET["keyword"]
+        if keyword:
+            products=Product.objects.order_by("-created_at").filter(Q(descriptions__icontains=keyword)|Q( product_name__icontains=keyword ) )
+            products_count = products.count()
+        context={
+            "products":products,
+            "products_count":products_count,
+        }
+
+    return render(request,"store.html",context)

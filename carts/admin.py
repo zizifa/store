@@ -5,6 +5,8 @@ from .models import Cart,CartItem
 class CartItemAdmin(admin.ModelAdmin):
     list_display = ["product","cart","quantity","is_active"]
 
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ["cart_id"]
 
 
-admin.site.register(Cart)
