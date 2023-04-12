@@ -1,3 +1,4 @@
+
 {% load static %}
 
 
@@ -42,7 +43,7 @@
                 <a class="dropdown-item" href="/store/"><b>All Products</b></a>
 
                 {% for category in links %}
-				    <a class="dropdown-item" href="{{ category.category_name }}">{{ category.category_name }} </a>
+				    <a class="dropdown-item" href="category/{{ category.slug }}">{{ category.category_name }} </a>
                 {% endfor %}
 			</div>
 		</div>  <!-- category-wrap.// -->

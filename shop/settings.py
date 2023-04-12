@@ -38,10 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core.apps.CoreConfig',
+    'core',
     'accounts',
     'store',
     'carts',
+    'order',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'core.context_processors.menu_link',
+                'core.context_processors.menu_links',
                 'carts.context_processors.counter',
             ],
         },
@@ -146,5 +147,5 @@ MESSAGE_TAGS ={
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_ROOT=587
 EMAIL_HOST_USER="agahparnia.shop@gmail.com"
-EMAIL_HOST_PASSWORD=''
+EMAIL_HOST_PASSWORD='@Nbgtf116'
 EMAIL_USE_TLS = True

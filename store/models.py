@@ -3,10 +3,11 @@ from core.models import Category
 from django.urls import reverse
 
 class Product(models.Model):
-    product_name=models.CharField(max_length=200)
-    slug=models.SlugField(max_length=200)
+    product_name=models.CharField(max_length=200, unique=True)
+    slug=models.SlugField(max_length=200, unique=True)
     descriptions=models.TextField(max_length=500 ,blank=True)
     product_image=models.ImageField(upload_to="mediafiles/product_image")
+    brand=models.CharField(max_length=100, blank=True)
     price=models.IntegerField()
     stock=models.IntegerField()
     is_available=models.BooleanField(default=True)
@@ -35,7 +36,7 @@ VARIATION_CATEGORY_CHOICES=(
     )
 
 class Variation(models.Model):
-    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE )
     variation_category=models.CharField(max_length=50,choices=VARIATION_CATEGORY_CHOICES)
     variation_value=models.CharField(max_length=100)
     is_active=models.BooleanField(default=True)

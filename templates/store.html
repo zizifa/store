@@ -10,7 +10,7 @@
 
 <div class="row">
 	<aside class="col-md-3">
-		
+
 <div class="card">
 	<article class="filter-group">
 		<header class="card-header">
@@ -21,11 +21,11 @@
 		</header>
 		<div class="filter-content collapse show" id="collapse_1" style="">
 			<div class="card-body">
-				
+
 				<ul class="list-menu">
                     <li><a href="/store/"><b>All Products</b></a></li>
                     {% for category in links %}
-				        <li><a href="{{ category.category_name }}">{{ category.category_name }} </a></li>
+				        <li><a href="category/{{ category.slug }}">{{ category.category_name }} </a></li>
                     {% endfor %}
 				</ul>
 
@@ -63,7 +63,7 @@
 		</div><!-- card-body.// -->
 		</div>
 	</article> <!-- filter-group .// -->
-	
+
 	<article class="filter-group">
 		<header class="card-header">
 			<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
@@ -73,7 +73,7 @@
 		</header>
 		<div class="filter-content collapse show" id="collapse_3" style="">
 			<div class="card-body">
-				
+
 				<div class="form-row">
 				<div class="form-group col-md-6">
 				  <label>Min</label>
@@ -105,7 +105,7 @@
 			</div><!-- card-body.// -->
 		</div>
 	</article> <!-- filter-group .// -->
-	
+
 </div> <!-- card.// -->
 
 	</aside> <!-- col.// -->
@@ -114,7 +114,7 @@
 <header class="border-bottom mb-4 pb-3">
 		<div class="form-inline">
 			<span class="mr-md-auto"><b>{{ products_count }}</b> items found </span>
-			
+
 		</div>
 </header><!-- sect-heading -->
 

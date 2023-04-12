@@ -24,10 +24,19 @@
 
             <h2 class="title">{{ product.product_name }}</h2>
 
+            <h6> Brand :{{ product.brand }}</h6>
+            <br>
             <div class="mb-3">
-                <var class="price h4">{{ product.price }}</var>
+                <var class="price h4">price : {{ product.price }}</var>
             </div>
 
+            <hr>
+
+            <div class="mb-3">
+                <var class="price h4">{{ product.descriptions }}</var>
+            </div>
+
+            <br>
             <p>{{ product.description }}</p>
 
 
@@ -59,7 +68,7 @@
                     <h4 class="text-danger"> out of stock </h4>
                 {% else %}
 
-                            <button type="submit" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i></button>
+                     <button type="submit" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i></button>
 
                 {% endif %}
             </article> <!-- product-info-aside .// -->
@@ -69,7 +78,7 @@
 </div> <!-- card.// -->
 <!-- ============================ COMPONENT 1 END .// ================================= -->
 
-<br>
+<!--<br>
 
 <div class="row">
 			<div class="col-md-9">
@@ -87,7 +96,7 @@
 				<h6 class="mb-1">Mike John </h6>
 
 			</div>
-		</div> <!-- icontext.// -->
+		</div>
 		<div class="mt-3">
 			<p>
 				Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -99,7 +108,7 @@
 
 
 
-	</div> <!-- col.// -->
+	</div>--> <!-- col.// -->
 </div> <!-- row.// -->
 
 
