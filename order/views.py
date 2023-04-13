@@ -5,6 +5,12 @@ from .forms import OrederForm
 from django.http import HttpResponse
 import datetime
 
+
+def payments(request):
+    return render(request,"payment.html")
+
+
+
 def place_order(request,total_price=0,quantity=0):
 
     current_user=request.user
@@ -48,7 +54,17 @@ def place_order(request,total_price=0,quantity=0):
             order_num=current_date + str(data.id)
             data.order_num = order_num
             data.save()
-            return redirect('checkout')
+
+            order=Order.objects.get(user=current_user,is_ordered=False,order_num=order_num)
+            context={
+                'order': order,
+                'cart_items': cart_items,
+                'total_price': total_price,
+                'final_total': final_total,
+                'post_price': post_price,
+
+            }
+            return render(request,'payment.html',context)
         # else:
         #     return HttpResponse("problem")
     else:
