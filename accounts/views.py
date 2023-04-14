@@ -12,7 +12,7 @@ from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-from order.models import Order
+from order.models import Order ,OrderProduct
 
 def register(request):
     if request.method=="POST":
@@ -196,6 +196,8 @@ def resetPassword(request):
     else:
         return render(request, 'resetPassword.html')
 
+
+@login_required(login_url='login')
 def my_orders(request):
     orders=Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
     context={
@@ -203,6 +205,8 @@ def my_orders(request):
     }
     return render(request,"my_orders.html",context)
 
+
+@login_required(login_url='login')
 def edit_profile(request):
     userprofile=get_object_or_404(Profile , user=request.user)
     if request.method=="POST":
@@ -221,3 +225,46 @@ def edit_profile(request):
         "profile_form":profile_form,
     }
     return render(request,"edit_profile.html",context)
+
+
+@login_required(login_url='login')
+def change_password(request):
+    if request.method=="POST":
+        current_password=request.POST['current_password']
+        new_password=request.POST['new_password']
+        confirm_password=request.POST['confirm_password']
+
+        user=Accounts.objects.get(username__iexact=request.user.username)
+        if new_password==confirm_password:
+            success=user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                #auth.logout(request)
+                messages.success(request,"Password Updated Successfully")
+                return redirect('change_password')
+            else:
+                messages.error(request,"plz enter valid current password")
+                return redirect('change_password')
+        else:
+            messages.error(request,'passwords does not match')
+            return redirect('change_password')
+
+    return render(request,'change_password.html')
+
+
+@login_required(login_url='login')
+def order_detail(request,order_id):
+    order_detail = OrderProduct.objects.filter(order__order_num=order_id)
+    print(order_detail)
+    order=Order.objects.get(order_num=order_id)
+    total_Price=0
+    for i in order_detail:
+        total_Price += i.product_price*i.quantity
+
+    context={
+        'order_detail':order_detail,
+        'order':order,
+        'total_Price':total_Price,
+    }
+    return render(request,'order_details.html',context)
