@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Accounts
+from .models import Accounts ,Profile
 from django.contrib.auth.admin import UserAdmin
 # Register your models here.
 
@@ -13,4 +13,8 @@ class Accountsadmin(UserAdmin):
     filter_horizontal = ()
     fieldsets = ()
 
+class Profileadmin(admin.ModelAdmin):
+    list_display = ["user","city","state"]
+
 admin.site.register(Accounts,Accountsadmin)
+admin.site.register(Profile,Profileadmin)

@@ -70,7 +70,7 @@
 			<var class="price">{{ cart_item.sub_total }}</var>
 			<small class="text-muted"> {{ cart_item.product.price }} each </small>
 		</div> <!-- price-wrap .// -->
-	</td>#}
+	</td>
 	<td class="text-right">
 	<a href="{% url "remove_cart_item" cart_item.product_id cart_item.id %}" onclick="return confirm ('Are you sure you want delete this item ?')" class="btn btn-danger"> Remove</a>
 	</td>
@@ -82,10 +82,10 @@
 </tbody>
 </table>
 </div> <!-- card.// -->
-{#
+
 	</aside> <!-- col.// -->
 	<aside class="col-lg-3">
-{#
+
 		<div class="card">
 		<div class="card-body">
 			<dl class="dlist-align">

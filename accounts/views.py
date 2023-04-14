@@ -1,6 +1,6 @@
-from django.shortcuts import render ,redirect
-from .forms import RegisterForm
-from .models import Accounts
+from django.shortcuts import render ,redirect,get_object_or_404
+from .forms import RegisterForm ,UserForm,ProfileForm
+from .models import Accounts ,Profile
 from carts.models import CartItem,Cart
 from carts.views import _cart_id
 from django.contrib import messages ,auth
@@ -12,7 +12,7 @@ from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-
+from order.models import Order
 
 def register(request):
     if request.method=="POST":
@@ -127,7 +127,13 @@ def activate(request,uidb64,token):
 
 @login_required(login_url='login')
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    orders=Order.objects.order_by('-created_at').filter(user_id=request.user.id ,is_ordered=True)
+    orders_count=orders.count()
+    context={
+        "orders_count":orders_count,
+        "orders":orders,
+    }
+    return render(request, 'dashboard.html',context)
 
 def forgotpassword(request):
     if request.method == 'POST':
@@ -189,3 +195,29 @@ def resetPassword(request):
             return redirect('resetPassword')
     else:
         return render(request, 'resetPassword.html')
+
+def my_orders(request):
+    orders=Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
+    context={
+        "orders":orders,
+    }
+    return render(request,"my_orders.html",context)
+
+def edit_profile(request):
+    userprofile=get_object_or_404(Profile , user=request.user)
+    if request.method=="POST":
+        user_form=UserForm(request.POST,instance=request.user)
+        profile_form=ProfileForm(request.POST,instance=userprofile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request,"your profile has been updated")
+            return redirect('edit_profile')
+    else:
+        user_form=UserForm(instance=request.user)
+        profile_form=ProfileForm(instance=userprofile)
+    context={
+        "user_form":user_form,
+        "profile_form":profile_form,
+    }
+    return render(request,"edit_profile.html",context)
