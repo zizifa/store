@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+=22nv$&9&3ae&*8w&p)(rrrc(6c=t384x=z$0^(jyn-&%o4dv'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'store',
     'carts',
     'order',
+    #'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +55,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
+
+#SESSION_EXPIRE_SECONDS = 3600  # after X sec user will bw logged out
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = 'accounts/login'
 
 ROOT_URLCONF = 'shop.urls'
 
@@ -144,8 +151,8 @@ MESSAGE_TAGS ={
     messages.ERROR:'danger',
 }
 
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_ROOT=587
-EMAIL_HOST_USER="agahparnia.shop@gmail.com"
-EMAIL_HOST_PASSWORD='@Nbgtf116'
-EMAIL_USE_TLS = True
+EMAIL_HOST=config('EMAIL_HOST')
+EMAIL_ROOT=config('EMAIL_ROOT', cast=int)
+EMAIL_HOST_USER=config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)

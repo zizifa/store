@@ -8,21 +8,21 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarTop4">
-    <ul class="navbar-nav mr-auto">
-    	<li class="nav-item dropdown">
-		 	<a href="#" class="nav-link">   English </a>
-
-		</li>
-		<li class="nav-item dropdown">
-			<a href="#" class="nav-link"> USD </a>
-		</li>
-    </ul>
-    <ul class="navbar-nav">
-		<li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
-		<li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
-	</ul> <!-- list-inline //  -->
-  </div> <!-- navbar-collapse .// -->
+{#  <div class="collapse navbar-collapse" id="navbarTop4">#}
+{#    <ul class="navbar-nav mr-auto">#}
+{#    	<li class="nav-item dropdown">#}
+{#		 	<a href="#" class="nav-link">   English </a>#}
+{##}
+{#		</li>#}
+{#		<li class="nav-item dropdown">#}
+{#			<a href="#" class="nav-link"> USD </a>#}
+{#		</li>#}
+{#    </ul>#}
+{#    <ul class="navbar-nav">#}
+{#		<li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>#}
+{#		<li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>#}
+{#	</ul> <!-- list-inline //  -->#}
+{#  </div> <!-- navbar-collapse .// -->#}
 </div> <!-- container //  -->
 </nav>
 
@@ -40,10 +40,10 @@
 				<i class="fa fa-bars"></i> All category
 			</button>
 			<div class="dropdown-menu">
-                <a class="dropdown-item" href="/store/"><b>All Products</b></a>
+                <a class="dropdown-item" href="{% url 'store' %}"><b>All Products</b></a>
 
                 {% for category in links %}
-				    <a class="dropdown-item" href="category/{{ category.slug }}">{{ category.category_name }} </a>
+				    <a class="dropdown-item" href="{{ category.get_url }}">{{ category.category_name }} </a>
                 {% endfor %}
 			</div>
 		</div>  <!-- category-wrap.// -->
