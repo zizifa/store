@@ -31,7 +31,14 @@
 			<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.product_image.url }}"> </a>
 			<figcaption class="info-wrap">
 				<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
-				<div class="price mt-1">{{ product.price }}</div> <!-- price-wrap.// -->
+				{% if  product.off_price > 0 %}
+                    <div class="price-wrap mt-2">
+                    <span class="price">{{ product.off_price }}</span>
+                    <del class="price-old">{{ product.price }}</del>
+                {% else %}
+                    <div class="price-wrap mt-2">
+                    <span class="price">{{ product.price }}</span>
+                {% endif %}
                 <div class="rating-star">
                 <span>
                     <i class="fa fa-star{% if product.average < 0.5 %}-o{% elif product.average >= 0.5 and product.average < 1 %}-half-o {% endif %}" aria-hidden="true"></i>

@@ -64,8 +64,10 @@
                                                         {% endfor %}
                                                     {% endif %}
                                                 </p>
+                                            {% if item.product.off_price %}
                                                 <td class="text-center">{{ item.quantity }}</td>
                                                 <td class="text-center">{{ item.price }}</td>
+
                                             </tr>
                                         {% endfor %}
                                         </tbody>

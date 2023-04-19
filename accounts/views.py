@@ -1,22 +1,24 @@
 from django.shortcuts import render ,redirect,get_object_or_404
-from .forms import RegisterForm ,UserForm,ProfileForm
+from .forms import RegisterForm,UserForm,ProfileForm
+from django.contrib.auth import authenticate
 from .models import Accounts ,Profile
 from carts.models import CartItem,Cart
 from carts.views import _cart_id
 from django.contrib import messages ,auth
 from django.contrib.auth.decorators import login_required
-# email variations
+from .authentication import EmailBackend
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-from order.models import Order ,OrderProduct
+from order.models import Order,OrderProduct
 
 def register(request):
     if request.method=="POST":
         form = RegisterForm(request.POST)
+
         if form.is_valid():
             first_name=form.cleaned_data['first_name']
             last_name=form.cleaned_data['last_name']
@@ -25,9 +27,10 @@ def register(request):
             password=form.cleaned_data['password']
             username=email.split('@')[0]
 
-            user=Accounts.objects.create_user(first_name=first_name,last_name=last_name,username=username,email=email,password=password)
+            user=Accounts.objects.create_user(first_name=first_name,last_name=last_name,email=email,username=username,phone_number=phone_number,password=password)#
             user.phone_number=phone_number
             user.save()
+
             #USER ACTIVATION
             current_site = get_current_site(request)
             mail_subject = 'Please activate your account'
@@ -51,11 +54,22 @@ def register(request):
 
 def login(request):
     if request.method=='POST':
-        email=request.POST['email']
-        password=request.POST['password']
 
-        user=auth.authenticate(email=email,password=password)
+        phone_number = request.POST.get('phone_number')
+        password = request.POST.get('password')
+        user = EmailBackend.authenticate(request=request, phone_number=phone_number, password=password)
+        # phone_number=request.POST['phone_number']
+        # print(phone_number)
+        # email=request.POST['email']
+        # print(email)
+        # password=request.POST['password']
+        # print(password)
+        #
+        # #user=auth.authenticate(email=email,phone_number=phone_number,password=password)
+        # user=authenticate(request,email=email,password=password)
+        print(user)
         if user is not None:
+            print("not None")
             try:
                 cart=Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()

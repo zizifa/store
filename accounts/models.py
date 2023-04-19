@@ -1,17 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser , BaseUserManager
+from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
 class AcoountsManager(BaseUserManager):
-    def create_user(self,first_name,last_name,username,email,password=None):
+    def create_user(self,first_name,last_name,username,phone_number,email,password=None):
         if not email:
             raise ValueError("you most have an email")
+        if not phone_number:
+            raise ValueError("you most have an phone number")
         if not username:
             raise ValueError("you most have a username")
 
         user = self.model(
             email=email,
             username=username,
+            phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
         )
@@ -19,12 +23,13 @@ class AcoountsManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self,first_name,last_name,username,email,password):
+    def create_superuser(self,first_name,phone_number,last_name,email,username,password):
         user=self.create_user(
             email=email,
             username=username,
             first_name=first_name,
             last_name=last_name,
+            phone_number=phone_number,
             password=password
         )
 
@@ -40,7 +45,8 @@ class Accounts(AbstractBaseUser):
     last_name=models.CharField(max_length=50 , blank=True)
     username=models.CharField(max_length=50,unique=True)
     email=models.CharField(max_length=50 , unique=True ,blank=True)
-    phone_number=models.CharField(max_length=20,unique=True)
+    # phone_number=PhoneNumberField(unique=True)
+    phone_number=models.CharField(max_length=11,unique=True)
 
     date_joined=models.DateTimeField(auto_now_add=True)
     last_login=models.DateTimeField(auto_now_add=True)

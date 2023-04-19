@@ -9,13 +9,15 @@ from django.db.models import Q
 from django.contrib import messages
 from order.models import OrderProduct
 from django.db.models import Avg
-
 from django.http import HttpResponse
+
 
 def store(request,category_slug=None):
     categories=None
     products=None
-    #category_all = Category.objects.all()
+    category_all = Category.objects.all()
+
+
 
     if category_slug != None:
         categories=get_object_or_404(Category,slug=category_slug)
@@ -31,17 +33,21 @@ def store(request,category_slug=None):
         page=request.GET.get("page")
         page_product=paginator.get_page(page)
 
-    size_list=[34,36,38,40,42,44]
+    """size_list=[34,36,38,40,42,44]
     for i in size_list:
         filterr=Variation.objects.filter(variation_value = i)
         if filterr:
             print(filterr)
+
+    for i in size_list:
+        i = Variation.objects.filter(variation_value = i)"""
 
 
 
     context = {
         "products": page_product ,
         "products_count":products_count,
+        'category_all':category_all,
         }
     return render(request,"store.html", context)
 
@@ -111,3 +117,61 @@ def submit_review(request, product_id):
                 messages.success(request, 'Thank you! Your review has been submitted.')
                 return redirect(url)
 
+def filter_price(request):
+    min_price = request.GET['min_price']
+    max_peice = request.GET['max_price']
+    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+
+    context={
+        "price_filter":price_filter,
+    }
+
+    return render(request,'store.html',context)
+
+def size_filter(request):
+    XS = request.GET['XS']
+    print(XS)
+
+    product_value = list(Variation.objects.filter(variation_value=XS).values())
+    product_list=[]
+    for i in product_value:
+        id=i["product_id"]
+        product_list.append(Product.objects.get(id=id))
+
+
+    print(product_list)
+
+    context = {
+        "size_filter": product_list,
+    }
+
+    return render(request, 'store.html', context)
+
+def filter(request):
+    min_price = request.GET['min_price']
+    max_peice = request.GET['max_price']
+    category=request.GET['category']
+    print(type(category))
+    size=request.GET['size']
+
+    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+
+    product_value = list(Variation.objects.filter(variation_value=size).values())
+    product_list=[]
+    for i in product_value:
+        id=i["product_id"]
+        product_list.append(Product.objects.get(id=id))
+
+    categores=Category.objects.filter(category_name=category)
+    print(categores)
+    category_product = Product.objects.filter(category=categores, is_available=True)
+
+
+    context={
+        "price_filter":price_filter,
+        "size_filter": product_list,
+        #"categores":categores,
+        'category_product':category_product,
+    }
+
+    return render(request, 'store.html', context)

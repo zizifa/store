@@ -11,11 +11,13 @@ class Product(models.Model):
     product_image=models.ImageField(upload_to="mediafiles/product_image")
     brand=models.CharField(max_length=100, blank=True)
     price=models.IntegerField()
+    off_price=models.IntegerField(default=0)
     stock=models.IntegerField()
     is_available=models.BooleanField(default=True)
     created_at=models.DateTimeField(auto_now_add=True)
     modified_date=models.DateTimeField(auto_now=True)
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
+    sold=models.IntegerField(default=0)
     #size
 
     def get_url(self):
@@ -52,7 +54,7 @@ VARIATION_CATEGORY_CHOICES=(
     )
 
 class Variation(models.Model):
-    product=models.ForeignKey(Product,on_delete=models.CASCADE )
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
     variation_category=models.CharField(max_length=50,choices=VARIATION_CATEGORY_CHOICES)
     variation_value=models.CharField(max_length=100)
     is_active=models.BooleanField(default=True)
@@ -86,7 +88,7 @@ class ProductGallery(models.Model):
     def __str__(self):
         return self.product.product_name
 
-    class Meta:
-        verbose_name:'productgallery'
-        verbose_name_plural='product gallery'
+        class Meta:
+            verbose_name = 'productgallery'
+            verbose_name_plural = 'product gallery'
 
