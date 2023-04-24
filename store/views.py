@@ -117,41 +117,40 @@ def submit_review(request, product_id):
                 messages.success(request, 'Thank you! Your review has been submitted.')
                 return redirect(url)
 
-def filter_price(request):
-    min_price = request.GET['min_price']
-    max_peice = request.GET['max_price']
-    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+# def filter_price(request):
+#     min_price = request.GET['min_price']
+#     max_peice = request.GET['max_price']
+#     price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+#
+#     context={
+#         "price_filter":price_filter,
+#     }
+#
+#     return render(request,'store.html',context)
 
-    context={
-        "price_filter":price_filter,
-    }
-
-    return render(request,'store.html',context)
-
-def size_filter(request):
-    XS = request.GET['XS']
-    print(XS)
-
-    product_value = list(Variation.objects.filter(variation_value=XS).values())
-    product_list=[]
-    for i in product_value:
-        id=i["product_id"]
-        product_list.append(Product.objects.get(id=id))
-
-
-    print(product_list)
-
-    context = {
-        "size_filter": product_list,
-    }
-
-    return render(request, 'store.html', context)
+# def size_filter(request):
+#     XS = request.GET['XS']
+#     print(XS)
+#
+#     product_value = list(Variation.objects.filter(variation_value=XS).values())
+#     product_list=[]
+#     for i in product_value:
+#         id=i["product_id"]
+#         product_list.append(Product.objects.get(id=id))
+#
+#
+#     print(product_list)
+#
+#     context = {
+#         "size_filter": product_list,
+#     }
+#
+#     return render(request, 'store.html', context)
 
 def filter(request):
     min_price = request.GET['min_price']
     max_peice = request.GET['max_price']
     category=request.GET['category']
-    print(type(category))
     size=request.GET['size']
 
     price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
@@ -162,9 +161,12 @@ def filter(request):
         id=i["product_id"]
         product_list.append(Product.objects.get(id=id))
 
-    categores=Category.objects.filter(category_name=category)
-    print(categores)
-    category_product = Product.objects.filter(category=categores, is_available=True)
+    category_product=[]
+    categores=list(Category.objects.filter(slug=category))
+    for i in categores:
+        product = Product.objects.filter(category__slug=i)
+        category_product.append(product)
+    print(category_product)
 
 
     context={

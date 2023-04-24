@@ -150,7 +150,6 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS ={
     messages.ERROR:'danger',
 }
-
 EMAIL_HOST=config('EMAIL_HOST')
 EMAIL_ROOT=config('EMAIL_ROOT', cast=int)
 EMAIL_HOST_USER=config('EMAIL_HOST_USER')

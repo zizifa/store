@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser , BaseUserManager
+from django.contrib.auth.hashers import make_password
+
 from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
@@ -19,7 +21,9 @@ class AcoountsManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
         )
-        user.set_password(password)
+
+        # user.set_password(password)
+        user.password=password
         user.save()
         return user
 
@@ -55,13 +59,17 @@ class Accounts(AbstractBaseUser):
     is_active=models.BooleanField(default=False)
     is_superadmin=models.BooleanField(default=False)
 
-    USERNAME_FIELD='email'
+    USERNAME_FIELD='phone_number'
     REQUIRED_FIELDS = ["first_name", "last_name","username"]
 
     objects= AcoountsManager()
 
+    def get_user(self):
+        return self.username
+
+
     def __str__(self):
-        return self.email
+        return self.username
 
     def has_perm(self,perm,obj=None):
         return self.is_admin

@@ -1,10 +1,14 @@
-from django.shortcuts import render ,redirect,get_object_or_404
+from django.shortcuts import render ,redirect,get_object_or_404,reverse
 from .forms import RegisterForm,UserForm,ProfileForm
+from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
+
 from .models import Accounts ,Profile
 from carts.models import CartItem,Cart
 from carts.views import _cart_id
-from django.contrib import messages ,auth
+from django.contrib import messages,auth
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .authentication import EmailBackend
 from django.contrib.sites.shortcuts import get_current_site
@@ -27,7 +31,7 @@ def register(request):
             password=form.cleaned_data['password']
             username=email.split('@')[0]
 
-            user=Accounts.objects.create_user(first_name=first_name,last_name=last_name,email=email,username=username,phone_number=phone_number,password=password)#
+            user=Accounts.objects.create_user(first_name=first_name,last_name=last_name,email=email,username=username,phone_number=phone_number,password=password)
             user.phone_number=phone_number
             user.save()
 
@@ -44,7 +48,7 @@ def register(request):
             send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
             #messages.success(request,"Registration successful")
-            return redirect(f'accounts/login/?command=verification='+email)
+            return redirect(f'/accounts/login/?command=verification='+email)
     else:
         form=RegisterForm()
     context={
@@ -52,24 +56,15 @@ def register(request):
     }
     return render(request,"register.html",context)
 
+
 def login(request):
     if request.method=='POST':
 
-        phone_number = request.POST.get('phone_number')
-        password = request.POST.get('password')
+        phone_number = request.POST['phone_number']
+        password=request.POST['password']
         user = EmailBackend.authenticate(request=request, phone_number=phone_number, password=password)
-        # phone_number=request.POST['phone_number']
-        # print(phone_number)
-        # email=request.POST['email']
-        # print(email)
-        # password=request.POST['password']
-        # print(password)
-        #
-        # #user=auth.authenticate(email=email,phone_number=phone_number,password=password)
-        # user=authenticate(request,email=email,password=password)
-        print(user)
+
         if user is not None:
-            print("not None")
             try:
                 cart=Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
@@ -107,8 +102,12 @@ def login(request):
                                 item.save()
             except:
                 pass
+            # username=user.get_user()
             auth.login(request,user)
-            return redirect('dashboard')
+            print(request.user.is_authenticated)
+            request.session.modified = True
+            return render(request,"dashboard.html")
+            # return HttpResponseRedirect(reverse('dashboard'))
         else:
             messages.error(request,"invalid login")
             return redirect('login')
@@ -141,13 +140,18 @@ def activate(request,uidb64,token):
 
 @login_required(login_url='login')
 def dashboard(request):
-    orders=Order.objects.order_by('-created_at').filter(user_id=request.user.id ,is_ordered=True)
-    orders_count=orders.count()
-    context={
-        "orders_count":orders_count,
-        "orders":orders,
-    }
-    return render(request, 'dashboard.html',context)
+    print(request.user)
+    print(request.user.is_authenticated)
+    if request.user.is_authenticated:
+        orders=Order.objects.order_by('-created_at').filter(user_id=request.user.id ,is_ordered=True)
+        orders_count=orders.count()
+        context={
+            "orders_count":orders_count,
+            "orders":orders,
+        }
+        return render(request, 'dashboard.html',context)
+    else:
+        return redirect('login')
 
 def forgotpassword(request):
     if request.method == 'POST':
