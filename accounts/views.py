@@ -105,8 +105,9 @@ def login(request):
             # username=user.get_user()
             auth.login(request,user)
             print(request.user.is_authenticated)
+            request.session['oauth_state'] = "1"
             request.session.modified = True
-            return render(request,"dashboard.html")
+            return redirect('dashboard')
             # return HttpResponseRedirect(reverse('dashboard'))
         else:
             messages.error(request,"invalid login")
@@ -138,7 +139,7 @@ def activate(request,uidb64,token):
         return redirect('register')
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def dashboard(request):
     print(request.user)
     print(request.user.is_authenticated)
