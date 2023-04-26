@@ -52,6 +52,15 @@ def register(request):
     }
     return render(request,"register.html",context)
 
+def create_data_of_dashboard(request):
+    orders=Order.objects.order_by('-created_at').filter(user_id=request.user.id ,is_ordered=True)
+    orders_count=orders.count()
+    context={
+        "orders_count":orders_count,
+        "orders":orders,
+    }
+    return context
+
 def login(request):
     if request.method=='POST':
 
@@ -67,9 +76,7 @@ def login(request):
         #
         # #user=auth.authenticate(email=email,phone_number=phone_number,password=password)
         # user=authenticate(request,email=email,password=password)
-        print(user)
         if user is not None:
-            print("not None")
             try:
                 cart=Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
@@ -108,12 +115,12 @@ def login(request):
             except:
                 pass
             auth.login(request,user)
-            return redirect('dashboard')
+            context=create_data_of_dashboard(request=request)
+            return render(request, 'dashboard.html',context)
         else:
             messages.error(request,"invalid login")
             return redirect('login')
     return render(request,"signin.html")
-
 
 @login_required(login_url='login')
 def logout(request):
@@ -137,17 +144,6 @@ def activate(request,uidb64,token):
     else:
         messages.error(request, 'Invalid activation link')
         return redirect('register')
-
-
-@login_required(login_url='login')
-def dashboard(request):
-    orders=Order.objects.order_by('-created_at').filter(user_id=request.user.id ,is_ordered=True)
-    orders_count=orders.count()
-    context={
-        "orders_count":orders_count,
-        "orders":orders,
-    }
-    return render(request, 'dashboard.html',context)
 
 def forgotpassword(request):
     if request.method == 'POST':
