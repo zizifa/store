@@ -52,10 +52,9 @@ def register(request):
 
 def login(request):
     if request.method=='POST':
-        email=request.POST['email']
-        password=request.POST['password']
-
-        user=auth.authenticate(email=email,password=password)
+        phone_number=request.POST['phone_number']
+        # password=request.POST['password']
+        user=auth.authenticate(phone_number=phone_number,password=password)
         if user is not None:
             try:
                 cart=Cart.objects.get(cart_id=_cart_id(request))
