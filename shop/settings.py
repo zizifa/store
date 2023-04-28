@@ -143,9 +143,26 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS ={
     messages.ERROR:'danger',
 }
+USERNAME_SMS="09359368504"
+PASSWORD_SMS="DT!Z7"
+TEXT_SMS="hellooo bro \n your code is: \n"
+SENDER_PHONE_NUMBER="50004001368504"
 
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_ROOT=587
 EMAIL_HOST_USER="agahparnia.shop@gmail.com"
 EMAIL_HOST_PASSWORD='glcrbnbsxuqkllys'
 EMAIL_USE_TLS = True
+
+CACHE_TTL = 60 * 2
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": "example",
+    }
+}
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"

@@ -14,6 +14,9 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from order.models import Order ,OrderProduct
+from melipayamak import Api
+from shop.settings import TEXT_SMS,PASSWORD_SMS,USERNAME_SMS,SENDER_PHONE_NUMBER
+from django.core.cache import cache
 
 def register(request):
     if request.method=="POST":
@@ -50,53 +53,75 @@ def register(request):
     }
     return render(request,"register.html",context)
 
+def send_sms(reciever_phone_number):
+    username = USERNAME_SMS
+    password = PASSWORD_SMS
+    api = Api(username, password)
+    sms = api.sms()
+    to = reciever_phone_number
+    _from = SENDER_PHONE_NUMBER
+    random_code = str(random.randint(10000,99999))
+    cache.set(reciever_phone_number,random_code)
+    text = TEXT_SMS + random_code
+    response_sms = sms.send(to, _from, text)
+    response = response_sms['StrRetStatus']
+    return response
+
 def login(request):
     if request.method=='POST':
         phone_number=request.POST['phone_number']
         # password=request.POST['password']
-        user=auth.authenticate(phone_number=phone_number,password=password)
-        if user is not None:
-            try:
-                cart=Cart.objects.get(cart_id=_cart_id(request))
-                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                if is_cart_item_exists:
-                    cart_item=CartItem.objects.filter(cart=cart)
-
-                    product_variation = []
-                    for item in cart_item:
-                        variation=item.variations.all()
-                        product_variation.append(list(variation))
-
-                    """for item in cart_item:
-                        item.user=user
-                        item.save()"""
-                    cart_item = CartItem.objects.filter(user=user)
-                    ex_var_list = []
-                    id = []
-                    for item in cart_item:
-                        exsistion_var = item.variations.all()
-                        ex_var_list.append(list(exsistion_var))
-                        id.append(item.id)
-
-                    for pr in product_variation:
-                        if pr in ex_var_list:
-                            index=ex_var_list.index(pr)
-                            item_id=id[index]
-                            item=CartItem.objects.get(id=item_id)
-                            item.quantity +=1
-                            item.user=user
-                            item.save()
-                        else:
+        # user=auth.authenticate(phone_number=phone_number,password=password)
+        response=send_sms(phone_number)
+        print(response)
+        try:
+            if response == 'OK' and INPUT_TEMPLATE == cache.get(phone_number):
+                user=Accounts.objects.get(phone_number=phone_number)
+                if user is not None:
+                    try:
+                        cart=Cart.objects.get(cart_id=_cart_id(request))
+                        is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                        if is_cart_item_exists:
                             cart_item=CartItem.objects.filter(cart=cart)
+
+                            product_variation = []
                             for item in cart_item:
+                                variation=item.variations.all()
+                                product_variation.append(list(variation))
+
+                            """for item in cart_item:
                                 item.user=user
-                                item.save()
-            except:
-                pass
-            auth.login(request,user)
-            return redirect('dashboard')
-        else:
-            messages.error(request,"invalid login")
+                                item.save()"""
+                            cart_item = CartItem.objects.filter(user=user)
+                            ex_var_list = []
+                            id = []
+                            for item in cart_item:
+                                exsistion_var = item.variations.all()
+                                ex_var_list.append(list(exsistion_var))
+                                id.append(item.id)
+
+                            for pr in product_variation:
+                                if pr in ex_var_list:
+                                    index=ex_var_list.index(pr)
+                                    item_id=id[index]
+                                    item=CartItem.objects.get(id=item_id)
+                                    item.quantity +=1
+                                    item.user=user
+                                    item.save()
+                                else:
+                                    cart_item=CartItem.objects.filter(cart=cart)
+                                    for item in cart_item:
+                                        item.user=user
+                                        item.save()
+                    except:
+                        pass
+                    auth.login(request,user)
+                    return redirect('dashboard')
+            else:
+                messages.error(request,"invalid login")
+                return redirect('login')
+        except:
+            messages.error(request, "token expiered in redis")
             return redirect('login')
     return render(request,"signin.html")
 
