@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Product,ReviewRating
+from .models import Product,ReviewRating,Variation
 from core.models import Category
 from carts.models import CartItem
 from .forms import ReviewForm
@@ -15,7 +15,7 @@ from django.http import HttpResponse
 def store(request,category_slug=None):
     categories=None
     products=None
-    #category_all = Category.objects.all()
+    category_all = Category.objects.all()
 
     if category_slug != None:
         categories=get_object_or_404(Category,slug=category_slug)
@@ -34,6 +34,7 @@ def store(request,category_slug=None):
     context = {
         "products": page_product ,
         "products_count":products_count,
+        'category_all':category_all,
         }
     return render(request,"store.html", context)
 
@@ -99,3 +100,33 @@ def submit_review(request, product_id):
                 data.save()
                 messages.success(request, 'Thank you! Your review has been submitted.')
                 return redirect(url)
+
+
+def filter(request):
+    min_price = request.GET['min_price']
+    max_peice = request.GET['max_price']
+    # category=request.GET['category']
+    # print(type(category))
+    size=request.GET['size']
+
+    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+
+    product_value = list(Variation.objects.filter(variation_value=size).values())
+    product_list=[]
+    for i in product_value:
+        id=i["product_id"]
+        product_list.append(Product.objects.get(id=id))
+
+    # categores=Category.objects.filter(category_name=category)
+    # print(categores)
+    # category_product = Product.objects.filter(category=categores, is_available=True)
+
+
+    context={
+        "price_filter":price_filter,
+        "size_filter": product_list,
+        #"categores":categores,
+        # 'category_product':category_product,
+    }
+
+    return render(request, 'store.html', context)
