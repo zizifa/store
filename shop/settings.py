@@ -147,5 +147,5 @@ MESSAGE_TAGS ={
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_ROOT=587
 EMAIL_HOST_USER="agahparnia.shop@gmail.com"
-EMAIL_HOST_PASSWORD='@Nbgtf116'
+EMAIL_HOST_PASSWORD='glcrbnbsxuqkllys'
 EMAIL_USE_TLS = True

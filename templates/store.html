@@ -117,8 +117,8 @@
 </header><!-- sect-heading -->
 
 <div class="row">
-    {% if price_filter %}
-        {% for product in price_filter %}
+    {% if test %}
+        {% for product in test %}
             <div class="col-md-4">
                 <figure class="card card-product-grid">
                     <div class="img-wrap">
@@ -136,78 +136,6 @@
                                 <span class="price">{{ product.price }}</span>
                             {% endif %}
                             </div>
-                        <a href="{{ product.get_url }}" class="btn btn-block btn-primary">View Detail </a>
-                    </figcaption>
-                </figure>
-            </div> <!-- col.// -->
-        {% endfor %}
-    {% elif size_filter %}
-        {% for product in size_filter %}
-            <div class="col-md-4">
-                <figure class="card card-product-grid">
-                    <div class="img-wrap">
-                        <a href="{{ product.get_url }}"><img src= "{{ product.product_image.url }}" ><a/>
-                    </div>
-                    <figcaption class="info-wrap">
-                        <div class="fix-height">
-                            <a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
-                            {% if  product.off_price > 0 %}
-                            <div class="price-wrap mt-2">
-                                <span class="price">{{ product.off_price }}</span>
-                                 <del class="price-old">{{ product.price }}</del>
-                            {% else %}
-                                <div class="price-wrap mt-2">
-                                <span class="price">{{ product.price }}</span>
-                            {% endif %}
-                        </div>
-                        <a href="{{ product.get_url }}" class="btn btn-block btn-primary">View Detail </a>
-                    </figcaption>
-                </figure>
-            </div> <!-- col.// -->
-        {% endfor %}
-    {% elif size_filter %}
-        {% for product in category_product %}
-            <div class="col-md-4">
-                <figure class="card card-product-grid">
-                    <div class="img-wrap">
-                        <a href="{{ product.get_url }}"><img src= "{{ product.product_image.url }}" ><a/>
-                    </div>
-                    <figcaption class="info-wrap">
-                        <div class="fix-height">
-                            <a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
-                            {% if  product.off_price > 0 %}
-                            <div class="price-wrap mt-2">
-                                <span class="price">{{ product.off_price }}</span>
-                                 <del class="price-old">{{ product.price }}</del>
-                            {% else %}
-                                <div class="price-wrap mt-2">
-                                <span class="price">{{ product.price }}</span>
-                            {% endif %}
-                        </div>
-                        <a href="{{ product.get_url }}" class="btn btn-block btn-primary">View Detail </a>
-                    </figcaption>
-                </figure>
-            </div> <!-- col.// -->
-        {% endfor %}
-    {% elif products %}
-        {% for product in products %}
-            <div class="col-md-4">
-                <figure class="card card-product-grid">
-                    <div class="img-wrap">
-                        <a href="{{ product.get_url }}"><img src= "{{ product.product_image.url }}" ><a/>
-                    </div>
-                    <figcaption class="info-wrap">
-                        <div class="fix-height">
-                            <a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
-                            {% if  product.off_price > 0 %}
-                            <div class="price-wrap mt-2">
-                                <span class="price">{{ product.off_price }}</span>
-                                 <del class="price-old">{{ product.price }}</del>
-                            {% else %}
-                                <div class="price-wrap mt-2">
-                                <span class="price">{{ product.price }}</span>
-                            {% endif %}
-                        </div>
                         <a href="{{ product.get_url }}" class="btn btn-block btn-primary">View Detail </a>
                     </figcaption>
                 </figure>

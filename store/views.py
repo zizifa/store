@@ -1,6 +1,7 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Product,ReviewRating,Variation
 from core.models import Category
+from django.db.models import Max
 from carts.models import CartItem
 from .forms import ReviewForm
 from carts.views import _cart_id
@@ -15,6 +16,7 @@ from django.http import HttpResponse
 def store(request,category_slug=None):
     categories=None
     products=None
+
     category_all = Category.objects.all()
 
     if category_slug != None:
@@ -34,8 +36,8 @@ def store(request,category_slug=None):
     context = {
         "products": page_product ,
         "products_count":products_count,
-        'category_all':category_all,
-        }
+        'category_all': category_all,
+    }
     return render(request,"store.html", context)
 
 
@@ -103,30 +105,51 @@ def submit_review(request, product_id):
 
 
 def filter(request):
+    all_category = False
+    all_size = False
     min_price = request.GET['min_price']
-    max_peice = request.GET['max_price']
-    # category=request.GET['category']
-    # print(type(category))
-    size=request.GET['size']
+    max_price = request.GET['max_price']
+    if min_price == '':
+        min_price = 0
+    else:
+        pass
+    if max_price == '':
+        max_price=Product.objects.aggregate(Max('price'))['price__max']
+    else:
+        pass
 
-    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+    category=request.GET.getlist('category')
+    size = request.GET.getlist('size')
+    if category == [] :
+        all_category = True
+        category = Category.objects.all()
+    else:
+        pass
+    if size == []:
+        all_size = True
+        size=Variation.objects.filter(variation_category='size')
+    else:
+        pass
 
-    product_value = list(Variation.objects.filter(variation_value=size).values())
-    product_list=[]
-    for i in product_value:
-        id=i["product_id"]
-        product_list.append(Product.objects.get(id=id))
-
-    # categores=Category.objects.filter(category_name=category)
-    # print(categores)
-    # category_product = Product.objects.filter(category=categores, is_available=True)
+    categor_list=[]
+    size_list=[]
+    if all_size == True:
+        for si in size:
+            size_list.append(si.variation_value)
+    else:
+        size_list += size
+    if all_category == True:
+        for categor in list(category):
+            categor_list.append(str(categor.slug))
+    else:
+        categor_list += category
+    test = Product.objects.filter(category__slug__in=categor_list,variation__variation_value__in=size_list, price__gte=min_price, price__lte=max_price)
+    category_all = Category.objects.all()
 
 
     context={
-        "price_filter":price_filter,
-        "size_filter": product_list,
-        #"categores":categores,
-        # 'category_product':category_product,
+        'category_all': category_all,
+        'test':test,
     }
 
     return render(request, 'store.html', context)

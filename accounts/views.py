@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render ,redirect,get_object_or_404
 from .forms import RegisterForm ,UserForm,ProfileForm
 from .models import Accounts ,Profile
@@ -24,8 +25,8 @@ def register(request):
             email=form.cleaned_data['email']
             password=form.cleaned_data['password']
             username=email.split('@')[0]
-
-            user=Accounts.objects.create_user(first_name=first_name,last_name=last_name,username=username,email=email,password=password)
+            rand_phone = random.randint(0,100)
+            user=Accounts.objects.create_user(first_name=first_name,last_name=last_name,phone_number=rand_phone,username=username,email=email,password=password)
             user.phone_number=phone_number
             user.save()
             #USER ACTIVATION
