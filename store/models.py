@@ -11,11 +11,13 @@ class Product(models.Model):
     product_image=models.ImageField(upload_to="mediafiles/product_image")
     brand=models.CharField(max_length=100, blank=True)
     price=models.IntegerField()
+    off_price=models.IntegerField(default=0)
     stock=models.IntegerField()
     is_available=models.BooleanField(default=True)
     created_at=models.DateTimeField(auto_now_add=True)
     modified_date=models.DateTimeField(auto_now=True)
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
+    solded=models.IntegerField(default=0)
     #size
 
     def get_url(self):
@@ -37,7 +39,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
-
 
 class VariationManager(models.Manager):
     def colors(self):

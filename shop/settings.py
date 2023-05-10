@@ -159,9 +159,10 @@ CACHE_TTL = 60 * 2
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        # "LOCATION": "redis://185.208.181.84:6379/1",
+        "LOCATION":"redis://:Nbgtf116@185.208.181.84:6379/1",
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-        "KEY_PREFIX": "example",
+        "KEY_PREFIX":"Nbgtf116",
     }
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
