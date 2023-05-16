@@ -27,18 +27,27 @@
 <div class="row">
     {% for products in product %}
 
-	<div class="col-md-3">
-		<div class="card card-product-grid">
-			<a href="{{ products.get_url }}" class="img-wrap"> <img src="{{ products.product_image.url }}"> </a>
-			<div class="info-wrap">
-				<a href="{{ products.get_url }}" class="title">{{ products.product_name }}</a>
-				<div class="price mt-1">{{ products.price }}</div> <!-- price-wrap.// -->
-
-                    <a href="{{ products.get_url }}" class="btn btn-block btn-primary">View Detail </a>
-                </div>
-			</figcaption>
-		</div>
-	</div> <!-- col.// -->
+	<div class="col-md-4">
+                <figure class="card card-product-grid">
+                    <div class="img-wrap">
+                        <a href="{{ products.get_url }}"><img src= "{{ products.product_image.url }}" ><a/>
+                    </div>
+                    <figcaption class="info-wrap">
+                        <div class="fix-height">
+                            <a href="{{ products.get_url }}" class="title">{{ products.product_name }}</a>
+                            {% if  products.off_price > 0 %}
+                            <div class="price-wrap mt-2">
+                                <span class="price">{{ products.off_price }}</span>
+                                 <del class="price-old">{{ products.price }}</del>
+                            {% else %}
+                                <div class="price-wrap mt-2">
+                                <span class="price">{{ products.price }}</span>
+                            {% endif %}
+                            </div>
+                        <a href="{{ products.get_url }}" class="btn btn-block btn-primary">View Detail </a>
+                    </figcaption>
+                </figure>
+            </div> <!-- col.// -->
     {% endfor %}
 </div><!-- container // -->
 </section>

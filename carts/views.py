@@ -157,7 +157,11 @@ def cart(request,total_price=0,quantity=0,post_price=25000,cart_items=None ):
             cart=Cart.objects.get(cart_id=_cart_id(request))
             cart_items=CartItem.objects.filter(cart=cart,is_active=True)
         for cart_item in cart_items:
-            total_price = total_price+(cart_item.product.price * cart_item.quantity)
+            if cart_item.product.off_price >0:
+                total_price = total_price+(cart_item.product.off_price * cart_item.quantity)
+            else:
+                total_price = total_price + (cart_item.product.price * cart_item.quantity)
+
             quantity = quantity+cart_item.quantity
         post_price = 25000
         final_total= total_price + post_price
@@ -183,6 +187,7 @@ def checkout(request,total_price=0,quantity=0,post_price=25000,cart_items=None):
         else:
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+
         for cart_item in cart_items:
             total_price += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity

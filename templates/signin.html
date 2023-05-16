@@ -7,26 +7,29 @@
 
 <!-- ============================ COMPONENT LOGIN   ================================= -->
 
-{% if request.GET.command == 'verification' %}
-
-<div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 1024px; margin-top:100px;">
-Thank you for registering with us. We have sent you a verification email to your email address [{{ request.GET.email }}]
-<br><br>
-Already verified? <a href="{% url 'login' %}">Login</a>
-</div>
-
-{% else %}
+{#{% if request.GET.command == 'verification' %}#}
+{##}
+{#<div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 1024px; margin-top:100px;">#}
+{#Thank you for registering with us. We have sent you a verification email to your email address [{{ request.GET.email }}]#}
+{#<br><br>#}
+{#Already verified? <a href="{% url 'login' %}">Login</a>#}
+{#</div>#}
+{##}
+{#{% else %}#}
 
 	<div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
 
       <div class="card-body">
       <h4 class="card-title mb-4">Sign in</h4>
       {% include 'alerts.html' %}
-      <form action="{% url 'login' %}" method="POST">
+      <form action="{% url 'checksmscode' %}" method="POST">
         {% csrf_token %}
           <div class="form-group">
 			 <input type="text" class="form-control" placeholder="phone_number" name="phone_number">
           </div> <!-- form-group// -->
+{#          <div class="form-group">#}
+{#			<input type="email" class="form-control" placeholder="email" name="email">#}
+{#          </div> <!-- form-group// -->#}
 {#          <div class="form-group">#}
 {#			<input type="password" class="form-control" placeholder="Password" name="password">#}
 {#          </div> <!-- form-group// -->#}
@@ -45,7 +48,7 @@ Already verified? <a href="{% url 'login' %}">Login</a>
      <p class="text-center mt-4">Don't have account? <a href="{% url 'register' %}">Sign up</a></p>
      <br><br>
 <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
-{% endif %}
+{#{% endif %}#}
 
 </section>
 {% endblock %}

@@ -33,19 +33,20 @@ def register(request):
             user.phone_number=phone_number
             user.save()
             #USER ACTIVATION
-            current_site = get_current_site(request)
-            mail_subject = 'Please activate your account'
-            message = render_to_string('account_verification_email.html', {
-                'user': user,
-                'domain': current_site,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-            })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
-            #messages.success(request,"Registration successful")
-            return redirect(f'accounts/login/?command=verification='+email)
+            # current_site = get_current_site(request)
+            # mail_subject = 'Please activate your account'
+            # message = render_to_string('account_verification_email.html', {
+            #     'user': user,
+            #     'domain': current_site,
+            #     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            #     'token': default_token_generator.make_token(user),
+            # })
+            # to_email = email
+            # send_email = EmailMessage(mail_subject, message, to=[to_email])
+            # send_email.send()
+            # #messages.success(request,"Registration successful")
+            # return redirect(f'accounts/login/?command=verification='+email)
+            return redirect(f'accounts/login/?command=verification=' + email)
     else:
         form=RegisterForm()
     context={
@@ -67,6 +68,7 @@ def send_sms(reciever_phone_number):
     response = response_sms['StrRetStatus']
     return response
 
+
 def login(request):
     if request.method=='POST':
         phone_number=request.POST['phone_number']
@@ -74,8 +76,9 @@ def login(request):
         # user=auth.authenticate(phone_number=phone_number,password=password)
         response=send_sms(phone_number)
         print(response)
+        print(cache.get(phone_number))
         try:
-            if response == 'OK' and INPUT_TEMPLATE == cache.get(phone_number):
+            if response == 'OK' and 'checksmscode.html' == cache.get(phone_number):
                 user=Accounts.objects.get(phone_number=phone_number)
                 if user is not None:
                     try:
@@ -125,6 +128,8 @@ def login(request):
             return redirect('login')
     return render(request,"signin.html")
 
+def checksmscode(request):
+    return render(request,"checksmscode.html")
 
 @login_required(login_url='login')
 def logout(request):

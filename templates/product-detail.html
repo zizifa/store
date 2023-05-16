@@ -37,9 +37,15 @@
             <h6> Brand :{{ product.brand }}</h6>
             <br>
             <div class="mb-3">
-                <var class="price h4">price : {{ product.price }}</var>
-            </div>
+                {% if  product.off_price > 0 %}
+                    <div class="price-wrap mt-2">
+                    <span class="price">price :{{ product.off_price }}</span>
+                    <del class="price-old">{{ product.price }}</del>
 
+                {% else %}
+                    <div class="price-wrap mt-2">
+                    <span class="price">price :{{ product.price }}</span>
+                {% endif %}
             <hr>
 
             <div class="mb-3">
