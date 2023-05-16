@@ -69,7 +69,14 @@
             <td>
                 <div class="price-wrap">
                     <var class="price"> {{ cart_item.sub_total }}</var>
-                    <small class="text-muted">  {{ cart_item.product.price }} each </small>
+                    {% if  cart_item.product.off_price > 0 %}
+                            <div class="price-wrap mt-2">
+                                <small class="text-muted">  {{ cart_item.product.off_price }} each </small>
+{#                                 <del class="price-old">{{ cart_item.product.price }}</del>#}
+                            {% else %}
+                                <div class="price-wrap mt-2">
+                                <small class="text-muted">  {{ cart_item.product.price }} each </small>
+                            {% endif %}
                 </div> <!-- price-wrap .// -->
             </td>
 

@@ -80,26 +80,28 @@ def payments(request):
 
 
 def place_order(request,total_price=0,quantity=0):
-
     current_user=request.user
     cart_items=CartItem.objects.filter(user=request.user)
+
     cart_items_count = cart_items.count()
     if cart_items_count <= 0:
         return redirect('store')
 
     post_price = 25000
     for cart_item in cart_items:
-        total_price = total_price + (cart_item.product.price * cart_item.quantity)
-        quantity = quantity + cart_item.quantity
+        if cart_item.product.off_price > 0:
+            total_price = total_price + (cart_item.product.off_price * cart_item.quantity)
+            quantity = quantity + cart_item.quantity
+        else:
+            for cart_item in cart_items:
+                total_price = total_price + (cart_item.product.off_price * cart_item.quantity)
+                quantity = quantity + cart_item.quantity
     final_total = total_price + post_price
 
     form = OrederForm()
     if request.method == 'POST':
-        print('before')
         form=OrederForm(request.POST)
-        print('after')
         if form.is_valid():
-            print('is valid')
             data = Order()
             data.user=current_user
             data.first_name=form.cleaned_data["first_name"]
@@ -110,7 +112,7 @@ def place_order(request,total_price=0,quantity=0):
             data.addres=form.cleaned_data["addres"]
             data.order_note=form.cleaned_data["order_note"]
             data.order_total= final_total
-            #data.post_pay=post_price
+            data.post_price=post_price
             data.ip=request.META.get('REMOTE_ADDR')
             data.save()
 

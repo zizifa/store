@@ -68,17 +68,23 @@ def send_sms(reciever_phone_number):
     response = response_sms['StrRetStatus']
     return response
 
+# global globalphone_number
+
+def checksmscode(request):
+    if request.method=='POST':
+        global globalphone_number
+        global globalresponse
+        globalphone_number=request.POST['phone_number']
+        globalresponse=send_sms(globalphone_number)
+
+        return render(request,"checksmscode.html")
 
 def login(request):
     if request.method=='POST':
-        phone_number=request.POST['phone_number']
-        # password=request.POST['password']
-        # user=auth.authenticate(phone_number=phone_number,password=password)
-        response=send_sms(phone_number)
-        print(response)
-        print(cache.get(phone_number))
+        phone_number=globalphone_number
+        code=int(request.POST['codenumber'])
         try:
-            if response == 'OK' and 'checksmscode.html' == cache.get(phone_number):
+            if globalresponse == 'Ok' and code == int(cache.get(phone_number)):
                 user=Accounts.objects.get(phone_number=phone_number)
                 if user is not None:
                     try:
@@ -128,8 +134,8 @@ def login(request):
             return redirect('login')
     return render(request,"signin.html")
 
-def checksmscode(request):
-    return render(request,"checksmscode.html")
+
+
 
 @login_required(login_url='login')
 def logout(request):
@@ -238,23 +244,40 @@ def my_orders(request):
 
 @login_required(login_url='login')
 def edit_profile(request):
-    userprofile=get_object_or_404(Profile , user=request.user)
-    if request.method=="POST":
-        user_form=UserForm(request.POST,instance=request.user)
-        profile_form=ProfileForm(request.POST,instance=userprofile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request,"your profile has been updated")
-            return redirect('edit_profile')
+
+
+    userprofile=Profile.objects.filter(user=request.user).exists()
+    print(userprofile)
+    if userprofile==True:
+        userprofile = get_object_or_404(Profile, user=request.user)
+        if request.method == 'POST':
+            user_form = UserForm(request.POST, instance=request.user)
+            profile_form = ProfileForm(request.POST, request.FILES, instance=userprofile)
+            if user_form.is_valid() and profile_form.is_valid():
+                user_form.save()
+                profile_form.save()
+                messages.success(request, 'Your profile has been updated.')
+                return redirect('edit_profile')
+        else:
+            user_form = UserForm(instance=request.user)
+            profile_form = ProfileForm(instance=userprofile)
     else:
-        user_form=UserForm(instance=request.user)
-        profile_form=ProfileForm(instance=userprofile)
-    context={
-        "user_form":user_form,
-        "profile_form":profile_form,
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(request.POST)
+        if profile_form.is_valid():
+            pro=Profile()
+            pro.user=request.user
+            pro.addres=profile_form.cleaned_data["addres"]
+            pro.city=profile_form.cleaned_data["city"]
+            pro.state=profile_form.cleaned_data["state"]
+            pro.save()
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'userprofile': userprofile,
     }
-    return render(request,"edit_profile.html",context)
+    return render(request, 'edit_profile.html', context)
 
 
 @login_required(login_url='login')
