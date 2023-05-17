@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/850be74573.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500&family=Noto+Sans+Arabic:wght@300&family=Roboto:ital@1&family=Tourney:wght@200&display=swap" rel="stylesheet">
+    <title>navbar</title>
+</head>
+<body>
+    <div class="container">
+        <navbar class="nav">
+           <div class="logo">
+               <a href="/"><img src="{% static "images/photo_2023-05-17_15-51-04.jpg"%}" alt="logo-photo"></a>
+           </div>
+           <div class="category">
+               <select name="" id="">
+                   <option value="" disabled selected hidden>دسته بندی</option>
+                   {% for category in links %}
+                       <option value=""> <a class="dropdown-item" href="category/{{ category.slug }}">
+                           <!-- hodi -->
+                           {{ category.category_name }} 
+                         </a></option>
+                    {% endfor %}
+                   
+               </select>
+           </div>
+           <div class="store">
+               <a href="/store/" class="button-store">فروشگاه</a>
+           </div>
+           <div class="form">
+               <form action="{% url "search" %}" method="GET">
+            <button type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+                <input type="text" name="keyword" id="search">
+            </form>
+           </div>
+           {% if user.id is None %}
+           <div class="text">
+               <div class="links">
+                   <a href="{% url "login" %}">ثبت نام</a>
+                   <a href="{% url "register" %}">ورود</a>
+               </div>
+               <span>خوش آمدید</span>
+            </div>
+            {% else %}
+            <div class="text">
+            <span>خوش آمدید{{user.first_name}}</span>
+            <div class="links">
+            <a  href="{% url "dashboard" %}">پنل کاربری</a>
+            <a  href="{% url "logout" %}">خروج</a>
+            </div>
+            </div>
+           {%endif%}
+           <div class="sabad-kharid">
+               <a href="{% url "cart" %}">
+                <span>{{quantity_counter}}</span>
+                <i class="fa-solid fa-cart-shopping"></i>
+               </a>
+           </div>
+        </navbar>
+    </div>
+</body>
+</html>

@@ -143,9 +143,11 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS ={
     messages.ERROR:'danger',
 }
+mess1="فروشگاه پرنیا"
+mess2="کد تایید :"
 USERNAME_SMS="09359368504"
 PASSWORD_SMS="DT!Z7"
-TEXT_SMS="hellooo bro \n your code is: \n"
+TEXT_SMS=f"{mess1} \n {mess2} \n"
 SENDER_PHONE_NUMBER="50004001368504"
 
 EMAIL_HOST='smtp.gmail.com'

@@ -1,0 +1,199 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+}
+
+body {
+    font-family: 'Noto Sans Arabic';
+    background-color:#626262;
+    color: #000;
+    overflow: hidden;
+}
+
+.bg-img {
+    position: absolute;
+}
+
+.bg-img img {
+    width: 60vh;
+    height: 92vh;
+    border-radius: 20px;
+    margin: 5px 30px;
+}
+
+.container {
+    background-color: #d3d3d3ab;
+    margin: 20px;
+    position: relative;
+    top: 20px;
+    width: 92%;
+    height: 87vh;
+    margin: 25px auto;
+    border-radius: 30px;
+    display: flex;
+    overflow-y: auto;
+}
+
+
+.produce {
+    width: 26%;
+    margin: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.produce h1 {
+    font-size: 1.8rem;
+    border-top: 1px solid #fff;
+}
+
+.produce .scroll {
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.produce .scroll .produce-main {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+   
+   
+}
+
+.scroll .produce-main .pro-img {
+    width: 70%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.scroll .produce-main .pro-img img {
+    margin-top: 10px;
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+}
+
+.scroll .produce-main .pro-img .details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.scroll .produce-main .quality {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 14px;
+}
+
+.scroll .produce-main .quality h4 {
+    font-weight: 500;
+}
+
+.produce .price{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.produce .price h4{
+    font-weight: 500;
+}
+
+.produce .price .price-t {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.produce .price .price-t .first {
+    font-size: 12px;
+}
+
+.produce .button-produce {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-right: 30px;
+}
+
+.produce .button-produce button {
+    align-items: center;
+    padding: 3px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Noto Sans Arabic';
+    font-weight: 700;
+    border: none;
+}
+
+.produce .button-produce a button {
+    align-items: center;
+    padding: 3px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Noto Sans Arabic';
+    font-weight: 700;
+    border: none;
+    width: 100%;
+}
+
+.produce .button-produce button:first-child {
+    background-color: #626262;
+    margin-bottom: 10px;
+    color: #fff;
+    border: none;
+}
+
+.billing-main {
+    width: 65%;
+    text-align: center;
+}
+
+.billing-main .billing {
+    width: 100%;
+    text-align: right;
+    display: grid;
+    grid-template-columns: repeat(2 , 1fr);
+    grid-column-gap: 10px;
+}
+
+.billing .complete {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.billing-main h1 {
+    font-size: 1.8rem;
+    /* text-align: center; */
+}
+
+.billing-main  .billing .input {
+    display: flex;
+    flex-direction: column;
+}
+
+.billing-main  .billing .input input {
+    padding: 9px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    font-size: 1rem;
+    text-align: right;
+}
+
+.billing-main  .billing .input textarea {
+    height: 170px;
+    border-radius: 10px;
+    resize: none;
+    outline: none;
+    text-align: right;
+    padding: 10px;
+    font-size: 1rem;
+}

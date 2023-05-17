@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from carts.views import cart
 from store.models import Product
 # Create your views here.
 def index(request):
@@ -10,7 +11,7 @@ def index(request):
             product=Product.objects.filter(product_name=j)
         else:
             product = Product.objects.all()
-
+    # product=cart(request).globalproduct
     context={
         "product":product,
     }

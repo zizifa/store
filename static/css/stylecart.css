@@ -1,0 +1,242 @@
+* {
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+    border: none;
+} 
+
+body {
+    font-family: 'Noto Sans Arabic';
+    /* color: #d8cdac; */
+
+}
+.container .img {
+    width: 300px;
+    height: 400px;
+    background-image: url(/static/images/photo_2023-05-17_16-57-21.jpg);
+    background-size: contain;
+    background-repeat: round;
+    border-radius: 10px;
+    margin: 100px 10px 0px 0px;
+    position: fixed;
+    right: 10px;
+    bottom: 30px;
+    z-index: -1;
+}
+.container .else {
+    display: flex;
+    flex-wrap: wrap;
+    width: 95%;
+    height: 90vh;
+    background-color: #a4907c81;
+    margin: 30px auto;
+    border-radius: 10px;
+    overflow: auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.produce {
+    display: flex;
+    align-items: center;
+    width: 60%;
+}
+
+.produce img {
+    width: 180px;
+    height: 180px;
+    border-radius: 30px;
+    margin: 10px 100px 30px 0px;
+    position: relative;
+    z-index: 100;
+}
+
+.produce .box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #f1dec9c7;
+    margin-top: 10px;
+    padding: 18px 20px;
+    border-radius: 30px;
+    position: relative;
+    left: 20px;
+    top: -19px;
+}
+
+.produce .shop-info , .produce .quantity {
+    padding-right: 40px;
+    
+}
+
+.produce .shop-info {
+    display: flex;
+    margin-right: 0px;
+}
+
+.produce .shop-info h1 a{
+    color: rgb(54, 54, 54);
+    display: inline-block;
+    word-break: break-all;
+    width: 100px;
+}
+
+.produce .shop-info span {
+    font-size: 1rem;
+    font-weight: 550;
+    color: #000;
+}
+
+.produce .quantity span {
+    display: block;
+    width: 100%;
+    color: rgb(54, 54, 54);
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-align: center;
+}
+.produce .quantity .butt{
+    margin-top: 17px;
+    display: flex;
+}
+
+.produce .quantity .butt input{
+    outline: none;
+    padding: 12px;
+    border-radius: 10px;
+    width: 39px;
+    text-align: center;
+    margin: 0px 10px;
+    
+}
+
+.produce .quantity .butt button {
+    padding: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.5s;
+    border-radius: 10px;
+    
+}
+
+.produce .quantity .butt button:first-child:hover , .produce .quantity .butt button:last-child:hover{
+    background-color: #ABC4AA;
+}
+.produce .price {
+    display: flex;
+    flex-direction: column;
+    margin: 0px 70px;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.produce .price .plass {
+    font-size: 1rem;
+    text-align: center;
+    color: rgb(43, 43, 43);
+}
+
+.produce .remove i{
+    font-size: 1.5rem;
+    color: #3C6255;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.produce .remove i:hover {
+    color: #AA5656;
+}
+
+.info {
+    background-color: #f7f5ebc5;
+    position: fixed;
+    left: 0px;
+    margin: 100px 64px;
+    padding: 30px 15px;
+    border-radius: 20px;
+}
+
+.info .price-info .total{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 21px;
+}
+
+.info .price-info .total i {
+    font-size: 1.3rem;
+    color: #3C6255;
+    margin-left: 9px;
+
+}
+
+.info .price-info .total .p {
+    margin-left: 90px;
+}
+
+
+.info .price-info .total .p-price{
+    margin-left: 20px;
+}
+.info .checkout-info {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgb(146, 146, 146);
+}
+
+.info .checkout-info button {
+    margin: 20px;
+    padding: 8px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-family: 'Noto Sans Arabic';
+    cursor: pointer;
+    width: 86%;
+}
+
+.info .checkout-info .checkout {
+    background-color: #698269c9;
+    color: #F0EBCE;
+    transition: 0.5s;
+    margin-bottom: -4px;
+}
+
+.info .checkout-info .continue {
+    background-color: #dae2b6a6;
+    transition: 00.5s;
+}
+
+.info .checkout-info .checkout:hover ,.info .checkout-info .continue:hover{
+    color: #698269c9;
+    background-color: #f1d6ab70;
+    border-bottom: 2px solid #698269c9;
+    border-radius: 0%;
+}
+
+.container .text-center {
+    text-align: center;
+    margin-top: 30px;
+    background-color: rgba(253, 236, 214, 0.521);
+}
+
+.container a .continue-1 {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    background-color: rgba(49, 97, 26, 0.473);
+    padding: 10px;
+    font-size: 1.5rem;
+    margin: 20px auto;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+
+.container a .continue-1:hover {
+   border-radius: 0;
+   color: azure;
+   border-bottom: 2px solid rgb(248, 191, 117);
+}

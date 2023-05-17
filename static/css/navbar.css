@@ -1,0 +1,186 @@
+*{
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+    list-style: none;
+    border: none;
+}
+
+
+body{
+    /* font-family: 'Alkatra', cursive; */
+    font-family: 'Noto Sans Arabic';
+    /* font-family: 'Roboto', sans-serif; */
+    /* font-family: 'Tourney', cursive; */
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.nav {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #c0bebe;
+    margin: 4px auto;
+    border-radius: 10px;
+    /*position: fixed;*/
+}
+
+.nav .logo img {
+     display: inline-block;
+     width: 70px;
+     height: 70px;
+     shape-outside: circle();
+     clip-path: circle();
+     margin: 8px 9px 2px 0px;
+     
+}
+
+.nav .category{
+    display: flex;
+    align-items: center;
+}
+.nav .category select{
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    outline: none;
+    font-size: 1rem;
+    font-family: 'Noto Sans Arabic';
+    transition: 0.5s;
+
+
+}
+
+.nav .category select option {
+    padding: 10px;
+}
+
+.nav .store {
+    display: flex;
+    align-items: center;
+}
+
+.nav .store .button-store {
+    font-family: 'Noto Sans Arabic';
+    cursor: pointer;
+    padding: 6px 16px;
+    font-size: 1rem;
+    background-color: #fff;
+    border-radius: 20px;
+    transition: 0.5s;
+    color: #000;
+}
+
+.nav .store .button-store:hover {
+    background-color: #ABC4AA;
+}
+
+
+.nav .form {
+    display: flex;
+    align-items: center;
+}
+
+.nav .form input {
+    padding: 8px;
+    width: 430px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    outline: none;
+    font-size: 1.3rem;
+}
+.nav .form button {
+    position: relative;
+    right: 10px;
+    background-color: #fff;
+    cursor: pointer;
+    padding: 16px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    outline: none;
+    transition: 0.5s;
+    bottom: 3px;
+    padding-bottom: 18px;
+}
+
+.nav .form button i {
+    font-size: 1.2rem;
+}
+
+.nav .form button:hover {
+    background-color: #ABC4AA;
+
+}
+
+.nav .text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  
+    margin-top: 16px;  
+}
+
+.nav .text .links a  {
+    color: #000;
+    font-size: 1rem;
+    cursor: pointer;
+    justify-content: center;
+    transition: 0.5s;
+}
+
+.nav .text .links span{
+    font-size: 0.9rem;
+}
+
+.nav .text .links a:first-child {
+    padding-left: 13px;
+    border-left: 1px solid #757575;
+}
+
+.nav .text .links a:last-child {
+    padding-right: 10px;
+}
+
+.nav .text .links a:hover {
+     color: #ABC4AA;
+
+}
+
+.nav .sabad-kharid  {
+    display: flex;
+    align-items: center;
+    width: 9%;
+}
+
+.nav .sabad-kharid i {
+    font-size: 1.4rem;
+    color: rgb(92, 91, 91);
+    border: 1px solid #c0bebe;
+    background-color: #fcf8f8;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.5s;
+    
+}
+
+.nav .sabad-kharid i:hover {
+    color: #ABC4AA;
+}
+
+.nav .sabad-kharid span {
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    background-color: #FA7070;
+    padding: 7px;
+    shape-outside: circle();
+    clip-path: circle();
+    position: relative;
+    top: -18px;
+    right: 14px;
+}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500&family=Noto+Sans+Arabic:wght@300&family=Roboto:ital@1&family=Tourney:wght@200&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <script src="https://kit.fontawesome.com/850be74573.js" crossorigin="anonymous"></script>
+    <title>dashboard</title>
+</head>
+<body>
+{% include 'alerts.html' %}
+    <div class="container">
+        <section class="menue">
+            <div class="menu-button">
+                <button class="blue"><a class="one" href="#">داشبورد</a></button>
+                <button><a class="2" href="#">سفارشات من</a></button>
+                <button><a class="3" href="#">تغییرات پروفایل</a></button>
+                <button><a class="4" href="#">تغییر رمز عبور</a></button>
+            </div>
+        </section>
+        <section class="dashboard">
+            <div class="dashboard-1">
+                <div class="header">
+                    <h1>شما <a href="">{{ user.first_name }} {{ user.last_name }}</a> هستید</h1>
+                </div>
+                <div class="boxs">
+                    <div class="total">
+                        <h1>سفارشات</h1>
+                        <span>{{orders_count}}</span>
+                        <!-- <a href="#">دیدن سفارش</a> -->
+                    </div>
+                    <div class="email">
+                        <a href="#">{{ user.email }}</a>
+                        <a href="#">{{ user.phone_number }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="my-orders">
+                <div class="header">
+                    <h1>سفارشات شما</h1>
+                </div>
+                {% for order in orders %}
+                <div class="tabel">
+                    <div class="order">سفارش</div>
+                    <div class="order">اسم</div>
+                    <div class="order">شماره تماس</div>
+                    <div class="order">جمع سفارشات</div>
+                    <div class="order">تاریخ</div>
+                    <div class="order"><a href="{% url 'order_detail' order.order_num %}">{{ order.order_num }}</a></div>
+                    <div class="order">{{ order.first_name }} {{ order.last_name }}</div>
+                    <div class="order">{{ order.phone_num }}</div>
+                    <div class="order">{{ order.order_total }}</div>
+                    <div class="order">{{ order.created_at }}</div>
+                </div>
+                {%endfor%}
+            </div>
+            <div class="edit-pro">
+                <div class="header">
+                    <h1>تغییرات پروفایل</h1>
+                </div>
+                <form action="{% url "edit_profile" %}" method="POST">
+                    {% csrf_token %}
+                <div class="adress">
+                    <form action="">
+                        <label for=""> نام :</label>
+{#                        <input type="text">#}
+                        {{ user_form.first_name }}
+                        <label for="">نام خانوادگی :</label>
+{#                         <input type="text">#}
+                        {{ user_form.last_name }}
+                    </form>
+                     <form action="">
+                         <label for="">شماره موبایل :</label>
+{#                          <input type="tel">#}
+                         {{ user_form.phone_number }}
+                         <label for="">ایمیل :</label>
+{#                         <input type="email">#}
+                         {{ user_form.email }}
+                        </form>
+                     <form action="">
+                         <label for="">آدرس :</label>
+{#                         <input class="input-adress" type="text">#}
+                         {{ profile_form.addres }}
+                     </form>
+                     <form action="">
+                         <label for="">شهر :</label>
+{#                          <input type="text">#}
+                         {{ profile_form.city }}
+                         <label for="">استان :</label>
+{#                          <input type="text">#}
+                         {{ profile_form.state }}
+                     </form>
+                     <div class="button">
+                        <button type="submit">ذخیره</button>
+                     </div>
+                </div>
+            </form>
+            </div>
+
+        <form action="{% url "change_password" %}" method="POST">
+            {% csrf_token %}
+            <div class="change-password">
+
+                <div class="header">
+                    <h1>تغییر رمز عبور</h1>
+                </div>
+                <div class="form">
+                    <form action="">
+                    <label for="">رمز فعلی :</label>
+                    <input type="password" name="current_password">
+                </form>
+                <form action="">
+                    <label for="">رمز جدید :</label>
+                    <input type="password" name="new_password">
+                </form>
+                <form action="">
+                    <label for="">تکرار رمز جدید :</label>
+                    <input type="password" name="confirm_password">
+                </form>
+                </div>
+                <div class="button">
+                    <button type="submit" value="Submit">ذخیره</button>
+                </div>
+
+            </div>
+        </form>
+
+        </section>
+        <section class="log-out">
+            <button type="submit">
+                <a href="{% url "logout" %}">خروج از حساب کاربری</a>
+                <i class="fa-solid fa-power-off"></i>
+            </button>
+        </section>
+    </div>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

@@ -47,7 +47,7 @@ def add_cart(request,product_id):
                 item.save()
 
             else:
-                item = CartItem.objects.create(product=product, quantity=1, user=current_user)
+                item = CartItem.objects.create(product=product, quantity=1, user=request.user)
                 if len(product_variation) > 0:
                     item.variations.clear()
                     item.variations.add(*product_variation)
@@ -149,6 +149,16 @@ def remove_cart_item(request,product_id,cart_item_id):
     return redirect('cart')
 
 def cart(request,total_price=0,quantity=0,post_price=25000,cart_items=None ):
+
+    # solded = list(Product.objects.all())
+    #     # for j in solded:
+    #     #     jj = j.stock / 2
+    #     #     global product
+    #     #     if j.solded > jj:
+    #     #         globalproduct = Product.objects.filter(product_name=j)
+    #     #     else:
+    #     #         globalproduct = Product.objects.all()
+
     final_total = 0
     try:
         if request.user.is_authenticated:
@@ -176,7 +186,7 @@ def cart(request,total_price=0,quantity=0,post_price=25000,cart_items=None ):
         "final_total": final_total,
     }
 
-    return render(request,"cart.html",context)
+    return render(request,"cart/cart2.html",context)
 
 @login_required(login_url='login')
 def checkout(request,total_price=0,quantity=0,post_price=25000,cart_items=None):
@@ -203,5 +213,4 @@ def checkout(request,total_price=0,quantity=0,post_price=25000,cart_items=None):
         "post_price": post_price,
         "final_total": final_total,
     }
-
-    return render(request,"checkout.html",context)
+    return render(request,"checkout/checkout.html",context)

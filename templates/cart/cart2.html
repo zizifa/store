@@ -1,0 +1,167 @@
+
+
+{% load static %}
+{#{% extends "base.html" %}#}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    {% block content %}
+    {% include "navbar/navbar.html" %}
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/stylecart.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500&family=Noto+Sans+Arabic:wght@300&family=Roboto:ital@1&family=Tourney:wght@200&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/850be74573.js" crossorigin="anonymous"></script>
+    <title>سبد خرید</title>
+    {% endblock %}
+
+
+</head>
+<body>
+    <div class="container">
+        <section class="img"></section>
+        {% if not cart_items %}
+    
+        <h2 class="text-center"> سبد خرید شما خالی است</h2>
+            <a href="{% url "store" %}"><button class="continue-1">ادامه خرید</button></a>
+        {% else %}
+
+        <section class="else">
+        {% for cart_item in cart_items %}
+            <div class="produce">
+                <div class="image"><a href="{{ cart_item.product.get_url }}"><img  src="{{ cart_item.product.product_image.url }}" alt=""></a>
+                </div>
+                <div class="box">
+                     <div class="shop-info">
+                        <h1><a href="{{ cart_item.product.get_url }}">
+                            <!-- produce name -->
+                            {{ cart_item.product.product_name }}
+                        </a></h1>
+                        <!-- <span>رنگ : سبز</span>
+                        <span>سایز  : 25</span> -->
+                        {% if cart_item.variations.all %}
+                            {% for item in cart_item.variations.all %}
+                                {{ item.variation_category }}: {{ item.variation_value }} <br>
+                            {% endfor %}
+                        {% endif %}
+                     </div>
+                     <div class="quantity">
+                         <span>تعداد</span>
+                         <div class="butt">
+                            <form action="{% url "add_cart"  cart_item.product_id %}" method="POST">
+                                {% csrf_token %}
+                                {% for item in cart_item.variations.all %}
+                                    <input type="hidden" name="{{ item.variation_category }}" value="{{ item.variation_value }}">
+                              {% endfor %}
+                              <button>
+                                <i class="fa-solid fa-plus"></i>
+                             </button>
+                            </form>
+
+                             <input type="text" value="{{ cart_item.quantity }} " disabled>
+                             <form action="{% url "remove_cart" cart_item.product_id cart_item.id %}" method="POST">
+                                {% csrf_token %}
+                                <button>
+                                    <i class="fa-solid fa-minus"></i>
+                                 </button>
+                            </form>
+                         </div>
+                     </div>
+                     <div class="price">
+                         <span>
+                             <!-- 20.000 -->
+                             {{ cart_item.sub_total }}
+                            </span>
+                         <span class="plass">
+                             <!-- 30.000 -->
+                             {{ cart_item.product.price }}
+                            </span>
+                     </div>
+                     <div class="remove">
+                        <a href="{% url "remove_cart_item" cart_item.product_id cart_item.id %}" onclick="return confirm ('Are you sure you want delete this item ?')" class="btn btn-danger">
+                            <button>
+                                <i class="fa-solid fa-trash-can"></i>
+                             </button>
+                        </a>
+                     </div>
+                </div>
+            </div>
+        {%endfor%}
+{#            <div class="info">#}
+{#                <div class="price-info">#}
+{#                    <div class="total">#}
+{#                        <i class="fa-brands fa-pagelines"></i>#}
+{#                        <p class="p">قیمت محصولات:</p>#}
+{#                        <p class="p-price">#}
+{#                            <!-- 20.000 -->#}
+{#                            {{ total_price }}#}
+{#                        </p>#}
+{#                    </div>#}
+{#                    <div class="total">#}
+{#                        <i class="fa-brands fa-pagelines"></i>#}
+{#                        <p class="p">قیمت پست:</p>#}
+{#                        <p class="p-price">#}
+{#                            <!-- 40.000 -->#}
+{#                            {{ post_price }}#}
+{#                        </p>#}
+{#                    </div>#}
+{#                    <div class="total">#}
+{#                        <i class="fa-brands fa-pagelines"></i>#}
+{#                        <p class="p">قیمت نهایی:</p>#}
+{#                        <p class="p-price">#}
+{#                            <!-- 60.000 -->#}
+{#                            {{ final_total }}#}
+{#                        </p>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="checkout-info">#}
+{#                    <a href="{% url "checkout" %}"><button class="checkout">نهایی کردن سفارش</button></a>#}
+{#                    <a href="{% url "store" %}"><button class="continue">ادامه خرید</button></a>#}
+{#                </div>#}
+{#            </div>#}
+{#    {%endif%}#}
+        </section>
+        <section class="second-info">
+             <div class="info">
+                <div class="price-info">
+                    <div class="total">
+                        <i class="fa-brands fa-pagelines"></i>
+                        <p class="p">قیمت محصولات:</p>
+                        <p class="p-price">
+                            <!-- 20.000 -->
+                            {{ total_price }}
+                        </p>
+                    </div>
+                    <div class="total">
+                        <i class="fa-brands fa-pagelines"></i>
+                        <p class="p">قیمت پست:</p>
+                        <p class="p-price">
+                            <!-- 40.000 -->
+                            {{ post_price }}
+                        </p>
+                    </div>
+                    <div class="total">
+                        <i class="fa-brands fa-pagelines"></i>
+                        <p class="p">قیمت نهایی:</p>
+                        <p class="p-price">
+                            <!-- 60.000 -->
+                            {{ final_total }}
+                        </p>
+                    </div>
+                </div>
+                <div class="checkout-info">
+                    <a href="{% url "checkout" %}"><button class="checkout">نهایی کردن سفارش</button></a>
+                    <a href="{% url "store" %}"><button class="continue">ادامه خرید</button></a>
+                </div>
+            </div>
+    {%endif%}
+        </section>
+    </div>
+
+</body>
+</html>
+

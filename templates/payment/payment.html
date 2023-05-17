@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/payment.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500&family=Noto+Sans+Arabic:wght@300&family=Roboto:ital@1&family=Tourney:wght@200&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <h1 class="top">review</h1>
+    <div class="container">
+        <section class="Adress-main">
+            <h1>adress</h1>
+            <span>{{ order.first_name }} {{ order.last_name }}</span>
+            <span>{{ order.addres}}</span>
+            <span>{{ order.city}}</span>
+            <span>{{ order.phone_num }}</span>
+            {% if order.order_note %}
+                <h5>order Note:<span>{{ order.order_note }}</span></h5>
+            {% endif %}
+            
+            <h1>review</h1>
+            {% for cart_item in cart_items %}
+            <div class="review">
+
+                <div class="produce">
+                    <h3>produce</h3>
+                    <div class="img-exp">
+                        <img src="{{ cart_item.product.product_image.url }}" alt="">
+                        <div class="exp">
+                            <span class="frist">{{ cart_item.product.product_name }}</span>
+                            <!-- <span>color:red</span>
+                            <span>size:34</span> -->
+                            {% if cart_item.variations.all %}
+                            {% for item in cart_item.variations.all %}
+                                {{ item.variation_category }}: {{ item.variation_value }} <br>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                   </div>
+                   <div class="quality">
+                       <h3>quality</h3>
+                       <span>{{cart_item.quantity}}</span>
+                   </div>
+                   <div class="price">
+                       <h3>price</h3>
+                       <h5>{{ cart_item.sub_total }}t</h5>
+                       <span>{{ cart_item.product.price }} </span>
+                   </div>
+
+            </div>
+            {%endfor%}
+        </section>
+        <section class="make-payment">
+            <div class="price-total">
+                <span>price-total:</span>
+                <span>{{ final_total }}</span>
+            </div>
+            <div class="price-total">
+                <span>post price:</span>
+                <span>{{ post_price }}</span>
+            </div>
+            <div class="price-total">
+                <span>fainal price:</span>
+                <span>{{ final_total }}</span>
+            </div>
+            <button type="submit">make payment</button>
+        </section>
+    </div>
+</body>
+</html>

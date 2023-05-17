@@ -1,0 +1,255 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    border: none;
+    outline: none;
+}
+
+body {
+    font-family: 'Noto Sans Arabic';
+    background-image: url(/static/images/photo_2023-05-17_22-06-10.jpg);
+    background-repeat: no-repeat;
+}
+
+.menue{
+    margin: 100px 20px 0px 0px;
+}
+
+.menue .menu-button button {
+    padding: 10px 20px;
+    margin-left: 104.3px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    cursor: pointer;
+    transition: 0.5s;
+    background-color: #f8eac8b9;
+}
+
+.menue .menu-button button:first-child {
+    border-right: 2px solid #C58940;
+}
+
+.menue .menu-button button:last-child{
+    border-left: 2px solid #C58940;
+}
+
+.menue .menu-button button:hover {
+    background-color: rgba(248, 237, 177, 0.63);
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+}
+
+/* .menue .menu-button button a:visited {
+     color: #C58940;
+     font-weight: bold;
+} */
+
+.menue .menu-button .blue{
+    color: #C58940;
+}
+
+.menue .menu-button button a {
+    font-family: 'Noto Sans Arabic';
+    font-weight: 700;
+    color: #000;
+}
+
+.dashboard-1 {
+    width: 55%;
+    background-color: #FAF8F1;
+    margin-right: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 0px 30px 8px -20px #e5b97344;
+    border-left: 2px solid #C58940;
+    border-bottom: 2px solid #C58940;
+    border-right: 2px solid #C58940;
+    padding-bottom: 40px;
+    animation: fade 1.3s 1;
+}
+.header h1 a , .header h1{
+    font-size: 1rem;
+}
+
+.header h1 a {
+    color: #C58940;
+}
+
+.header h1 {
+    padding: 5px 24px;
+    border-bottom: 1px solid rgba(116, 114, 114, 0.589);
+}
+
+.header{
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+    align-items: center;
+}
+
+.boxs {
+    display: flex;
+    justify-content: space-around;
+}
+
+.boxs .total , .boxs .email{
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #E5BA73;
+    padding: 10px 40px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.boxs .total h1 {
+    font-size: 1.3rem;
+}
+
+.boxs .total span {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 10px auto;
+}
+
+.boxs .total a {
+    font-weight: 700;
+    color: #C58940;
+}
+
+.boxs .email a{
+   color: black;
+   font-weight: 550;
+   margin: 20px 0px;
+   
+}
+
+.boxs .email a:last-child{
+    margin: 0px auto;
+}
+
+.log-out{
+    display: flex;
+    justify-content: center;
+   width: 58%;
+   
+}
+
+.log-out button{
+    padding: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #C58940;
+    color: #fff;
+    font-weight: 600;
+    font-family: 'Noto Sans Arabic';
+    cursor: pointer;    
+}
+
+.my-orders , .edit-pro ,.change-password{
+    display: none;
+    width: 55%;
+    background-color: #faf4e0;
+    margin-right: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 0px 30px 8px -20px #e5b97344;
+    border-left: 2px solid #C58940;
+    border-bottom: 2px solid #C58940;
+    border-right: 2px solid #C58940;
+    padding-bottom: 40px;
+    animation: fade 1.3s 1;
+}
+
+.my-orders .tabel {
+    display: grid;
+    grid-template-columns: repeat(5,149.5px);
+    margin:40px 0px;
+}
+
+.my-orders .tabel .order {
+    border: 1px solid #C58940;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.my-orders .tabel .order a {
+    color: black;
+}
+.adress{
+    margin-top: 20px;
+}
+.adress label{
+    margin-right: 50px;
+}
+
+.adress .input-adress {
+    width: 80%;
+}
+.adress input {
+    padding: 10px;
+    border-radius: 10px;
+    margin: 15px;
+    width: 26%;
+}
+
+
+.adress .button , .change-password .button{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.adress button , .change-password button{
+    display: inline-block;
+    background-color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-family: 'Noto Sans Arabic';
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.5s;
+    margin-top: 20px;
+    border: 1px solid #C58940;
+}
+
+.adress button:hover,.change-password button:hover {
+    background-color: #E5BA73;
+    color: #fff;
+}
+
+.change-password input {
+    padding: 10px;
+    border-radius: 10px;
+    width: 60%;
+    margin: 10px;
+}
+
+.change-password .form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+/* .menue .menu-button button .active {
+    color: #C58940;
+} */
+
+@keyframes fade {
+    0%{
+        margin-top: 30px;
+        opacity: 0.1;
+    }
+
+    100% {
+        margin-top: 0px;
+        opacity: 1;
+    }
+}
+
+

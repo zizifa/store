@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/checkout.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500&family=Noto+Sans+Arabic:wght@300&family=Roboto:ital@1&family=Tourney:wght@200&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+<form action="{% url "place_order" %}" method="POST">
+        {% csrf_token %}
+
+        <div class="container">
+
+
+            <section class="produce">
+
+                <h1 class="h">محصولات</h1>
+                {% for cart_item in cart_items %}
+
+                <div class="scroll">
+
+                    <div class="produce-main">
+                        <div class="quality">
+                            <h4>تعداد</h4>
+                            <span>{{cart_item.quantity}}</span>
+                        </div>
+                        
+                        <div class="price">
+                            <h4>قیمت</h4>
+                            <div class="price-t">
+                                {% if  cart_item.product.off_price > 0 %}
+                                <span>{{ cart_item.product.off_price }} </span>
+                                <span class="first">{{ cart_item.sub_total }}</span>
+                                {% else %}
+                                <span>{{ cart_item.product.price }} each </span>
+                                <span class="first">{{ cart_item.sub_total }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="pro-img">
+                            <div class="details">
+                                <span> {{ cart_item.product.product_name }}</span>
+                                <!-- <span>رنگ : آبی</span>
+                                <span>سایز : 34</span> -->
+                                {% if cart_item.variations.all %}
+                            {% for item in cart_item.variations.all %}
+                                {{ item.variation_category }}: {{ item.variation_value }} <br>
+                            {% endfor %}
+                        {% endif %}
+                            </div>
+                            <img src="{{ cart_item.product.product_image.url }}" alt="">
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+                <div class="button-produce">
+                    <button type="submit">ثبت</button>
+                    <a href="{% url 'store' %}"><button type="submit">ادامه خرید</button></a>
+                </div>
+            </section>
+            <section class="billing-main">
+                <h1>آدرس</h1>
+                <div class="billing">
+                    <div class="input">
+                        <span>نام</span>
+                        <input type="text" name="first_name" id="">
+                    </div>
+                    <div class="input">
+                        <span>نام خانوادگی</span>
+                        <input type="text" name="last_name" id="">
+                    </div>
+                    <div class="input">
+                        <span>ایمیل</span>
+                        <input type="email" name="email" id="">
+                    </div>
+                    <div class="input">
+                        <span>شماره تلفن</span>
+                        <input type="tel" name="phone_num" id="">
+                    </div>
+                    <div class="input complete">
+                        <span>آدرس</span>
+                        <input type="text" name="addres" id="">
+                    </div>
+                    <div class="input">
+                        <span>شهر</span>
+                        <input type="text" name="city" id="">
+                    </div>
+                    <div class="input">
+                        <span>استان</span>
+                        <input type="text" name="state" id="">
+                    </div>
+                    <div class="input complete">
+                        <span>توضیحات</span>
+                        <textarea name="order_note"></textarea>
+                    </div>    
+                </div>
+            </section>
+        </div>
+
+</form>
+</body>
+</html>
