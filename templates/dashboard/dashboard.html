@@ -12,7 +12,7 @@
     <title>dashboard</title>
 </head>
 <body>
-
+{% include 'alerts.html' %}
     <div class="container">
         <section class="menue">
             <div class="menu-button">
@@ -65,7 +65,7 @@
                 <form action="{% url "edit_profile" %}" method="POST">
                     {% csrf_token %}
                 <div class="adress">
-                    <form >
+                    <form action="">
                         <label for=""> نام :</label>
 {#                        <input type="text">#}
                         {{ user_form.first_name }}
@@ -73,7 +73,7 @@
 {#                         <input type="text">#}
                         {{ user_form.last_name }}
                     </form>
-                     <form >
+                     <form action="">
                          <label for="">شماره موبایل :</label>
 {#                          <input type="tel">#}
                          {{ user_form.phone_number }}
@@ -81,12 +81,12 @@
 {#                         <input type="email">#}
                          {{ user_form.email }}
                         </form>
-                     <form >
+                     <form action="">
                          <label for="">آدرس :</label>
 {#                         <input class="input-adress" type="text">#}
                          {{ profile_form.addres }}
                      </form>
-                     <form >
+                     <form action="">
                          <label for="">شهر :</label>
 {#                          <input type="text">#}
                          {{ profile_form.city }}

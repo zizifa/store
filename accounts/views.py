@@ -46,7 +46,7 @@ def register(request):
             # send_email.send()
             # #messages.success(request,"Registration successful")
             # return redirect(f'accounts/login/?command=verification='+email)
-            return redirect('login')
+            return redirect(f'accounts/login/?command=verification=' + email)
     else:
         form=RegisterForm()
     context={
@@ -188,42 +188,41 @@ def dashboard(request):
     #         messages.error(request,'passwords does not match')
     #         return redirect('change_password')
     # -----------------------------------------------------------------------------------------------
-    userprofile = Profile.objects.filter(user=request.user).exists()
+    # userprofile = Profile.objects.filter(user=request.user).exists()
     # print(userprofile)
-    if userprofile == True:
-        userprofile = get_object_or_404(Profile, user=request.user)
-        if request.method == 'POST':
-            user_form = UserForm(request.POST, instance=request.user)
-            profile_form = ProfileForm(request.POST, request.FILES, instance=userprofile)
-            if user_form.is_valid() and profile_form.is_valid():
-                user_form.save()
-                profile_form.save()
-                messages.success(request, 'Your profile has been updated.')
-                return redirect('edit_profile')
-        else:
-            user_form = UserForm(instance=request.user)
-            profile_form = ProfileForm(instance=userprofile)
-    else:
-        user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(request.POST)
-        if profile_form.is_valid():
-            pro = Profile()
-            pro.user = request.user
-            pro.addres = profile_form.cleaned_data["addres"]
-            pro.city = profile_form.cleaned_data["city"]
-            pro.state = profile_form.cleaned_data["state"]
-            pro.save()
+    # if userprofile == True:
+    #     userprofile = get_object_or_404(Profile, user=request.user)
+    #     if request.method == 'POST':
+    #         user_form = UserForm(request.POST, instance=request.user)
+    #         profile_form = ProfileForm(request.POST, request.FILES, instance=userprofile)
+    #         if user_form.is_valid() and profile_form.is_valid():
+    #             user_form.save()
+    #             profile_form.save()
+    #             messages.success(request, 'Your profile has been updated.')
+    #             return redirect('dashboard')
+    #     else:
+    #         user_form = UserForm(instance=request.user)
+    #         profile_form = ProfileForm(instance=userprofile)
+    # else:
+    #     user_form = UserForm(instance=request.user)
+    #     profile_form = ProfileForm(request.POST)
+    #     if profile_form.is_valid():
+    #         pro = Profile()
+    #         pro.user = request.user
+    #         pro.addres = profile_form.cleaned_data["addres"]
+    #         pro.city = profile_form.cleaned_data["city"]
+    #         pro.state = profile_form.cleaned_data["state"]
+    #         pro.save()
 
 
     context={
         "orders_count":orders_count,
         "orders":orders,
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'userprofile': userprofile,
+        # 'user_form': user_form,
+        # 'profile_form': profile_form,
+        # 'userprofile': userprofile,
     }
     return render(request, 'dashboard/dashboard.html',context)
-
 
 def forgotpassword(request):
     if request.method == 'POST':
@@ -299,17 +298,13 @@ def my_orders(request):
 @login_required(login_url='login')
 def edit_profile(request):
     userprofile=Profile.objects.filter(user=request.user).exists()
+    print(userprofile)
     if userprofile==True:
         userprofile = get_object_or_404(Profile, user=request.user)
-        print(f"{userprofile}hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-
-        userform=get_object_or_404(Accounts,email=request.user)
-        print(userform)
         if request.method == 'POST':
-            user_form = UserForm(request.POST, instance=userform)
+            user_form = UserForm(request.POST, instance=request.user)
             profile_form = ProfileForm(request.POST, request.FILES, instance=userprofile)
-            print(user_form.is_valid())
-            if profile_form.is_valid():
+            if user_form.is_valid() and profile_form.is_valid():
                 user_form.save()
                 profile_form.save()
                 messages.success(request, 'Your profile has been updated.')
@@ -333,8 +328,7 @@ def edit_profile(request):
         'profile_form': profile_form,
         'userprofile': userprofile,
     }
-    # return render(request, 'edit_profile.html', context)
-    return redirect('dashboard')
+    return render(request, 'edit_profile.html', context)
 
 
 @login_required(login_url='login')
@@ -360,14 +354,13 @@ def change_password(request):
             messages.error(request,'passwords does not match')
             return redirect('change_password')
 
-    # return render(request,'dashboard/dashboard.html')
-    return redirect('dashboard')
+    return render(request,'dashboard/dashboard.html')
 
 
 @login_required(login_url='login')
 def order_detail(request,order_id):
     order_detail = OrderProduct.objects.filter(order__order_num=order_id)
-    # print(order_detail)
+    print(order_detail)
     order=Order.objects.get(order_num=order_id)
     total_Price=0
     for i in order_detail:
