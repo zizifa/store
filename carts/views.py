@@ -12,19 +12,22 @@ def _cart_id(request):
         cart=request.session.create()
     return cart
 
+
 def add_cart(request,product_id):
-    current_user=request.user
-    product=Product.objects.get(id=product_id)
+    current_user = request.user
+    product = Product.objects.get(id=product_id)  # get the product
+    # If the user is authenticated
     if current_user.is_authenticated:
         product_variation = []
-        if request.method == "POST":
-            for items in request.POST:
-                key = items
+        if request.method == 'POST':
+            for item in request.POST:
+                key = item
                 value = request.POST[key]
+
                 try:
-                    variations = Variation.objects.get(product=product, variation_category__iexact=key,
-                                                       variation_value__iexact=value)
-                    product_variation.append(variations)
+                    variation = Variation.objects.get(product=product, variation_category__iexact=key,
+                                                      variation_value__iexact=value)
+                    product_variation.append(variation)
                 except:
                     pass
 
@@ -33,12 +36,15 @@ def add_cart(request,product_id):
             cart_item = CartItem.objects.filter(product=product, user=current_user)
             ex_var_list = []
             id = []
+
             for item in cart_item:
                 existing_variation = item.variations.all()
                 ex_var_list.append(list(existing_variation))
                 id.append(item.id)
 
+            product_variation=product_variation[::-1]
             if product_variation in ex_var_list:
+                print(f"if product_variation in ex_var_list is true")
                 # increase the cart item quantity
                 index = ex_var_list.index(product_variation)
                 item_id = id[index]
@@ -47,12 +53,14 @@ def add_cart(request,product_id):
                 item.save()
 
             else:
+                print(f"if product_variation in ex_var_list false")
                 item = CartItem.objects.create(product=product, quantity=1, user=request.user)
                 if len(product_variation) > 0:
                     item.variations.clear()
                     item.variations.add(*product_variation)
                 item.save()
         else:
+            print(False)
             cart_item = CartItem.objects.create(
                 product=product,
                 quantity=1,
@@ -120,6 +128,7 @@ def add_cart(request,product_id):
             cart_item.save()
         return redirect('cart')
 
+
 def remove_cart(request,product_id,cart_item_id):
     product=get_object_or_404(Product,id=product_id)
     try:
@@ -138,6 +147,7 @@ def remove_cart(request,product_id,cart_item_id):
         pass
     return redirect("cart")
 
+
 def remove_cart_item(request,product_id,cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
@@ -147,6 +157,7 @@ def remove_cart_item(request,product_id,cart_item_id):
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id)
     cart_item.delete()
     return redirect('cart')
+
 
 def cart(request,total_price=0,quantity=0,post_price=25000,cart_items=None ):
 
@@ -186,7 +197,7 @@ def cart(request,total_price=0,quantity=0,post_price=25000,cart_items=None ):
         "final_total": final_total,
     }
 
-    return render(request,"cart/cart2.html",context)
+    return render(request,"cart.html",context)
 
 @login_required(login_url='login')
 def checkout(request,total_price=0,quantity=0,post_price=25000,cart_items=None):
@@ -213,4 +224,4 @@ def checkout(request,total_price=0,quantity=0,post_price=25000,cart_items=None):
         "post_price": post_price,
         "final_total": final_total,
     }
-    return render(request,"checkout/checkout.html",context)
+    return render(request,"checkout.html",context)

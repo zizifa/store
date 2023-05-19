@@ -134,7 +134,7 @@ def place_order(request,total_price=0,quantity=0):
                 'post_price': post_price,
 
             }
-            return render(request,'payment/payment.html',context)
+            return render(request,'payment.html',context)
         # else:
         #     return HttpResponse("problem")
     else:
