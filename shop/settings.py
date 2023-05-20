@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
+from django.contrib.messages import constants as messages
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+=22nv$&9&3ae&*8w&p)(rrrc(6c=t384x=z$0^(jyn-&%o4dv'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG',cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -138,23 +141,22 @@ STATIC_ROOT = os.path.join(BASE_DIR , 'staticfiles')
 STATICFILES_DIRS=(os.path.join(BASE_DIR,'static'),)
 
 
-from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS ={
     messages.ERROR:'danger',
 }
 mess1="فروشگاه پرنیا"
 mess2="کد تایید :"
-USERNAME_SMS="09359368504"
-PASSWORD_SMS="DT!Z7"
-TEXT_SMS=f"{mess1} \n {mess2} \n"
-SENDER_PHONE_NUMBER="50004001368504"
+USERNAME_SMS=config('USERNAME_SMS')
+PASSWORD_SMS=config('PASSWORD_SMS')
+TEXT_SMS=f'{mess1} \n {mess2} \n'
+SENDER_PHONE_NUMBER=config('SENDER_PHONE_NUMBER')
 
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_ROOT=587
-EMAIL_HOST_USER="agahparnia.shop@gmail.com"
-EMAIL_HOST_PASSWORD='glcrbnbsxuqkllys'
-EMAIL_USE_TLS = True
+EMAIL_HOST=config("EMAIL_HOST")
+EMAIL_ROOT=config('EMAIL_ROOT',cast=int)
+EMAIL_HOST_USER=config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS',cast=bool)
 
 CACHE_TTL = 60 * 2
 
