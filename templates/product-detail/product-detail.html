@@ -1,0 +1,148 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    {% block content %}
+    {% include "navbar/navbar.html" %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/product-detail.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500&family=Noto+Sans+Arabic:wght@300&family=Roboto:ital@1&family=Tourney:wght@200&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/850be74573.js" crossorigin="anonymous"></script>
+    <title>جزئیات سفارش</title>
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+    <section class="image-details">
+        <div class="img-backgrand">
+          <div class="image-slide">
+          <div class="myslides fade">
+                <img src="{{ product.product_image.url }}" alt="">
+            </div>
+            {% for i in product_gallery %}
+            <div class="myslides fade">
+                <img src="{{ i.image.url }}" alt="">
+            </div>
+            {% endfor %}
+
+            <a class="prev" onclick="plusSlides(-1)">❮</a>
+            <a class="next" onclick="plusSlides(1)">❯</a>
+        </div>
+      </div>
+      <form action="{% url "add_cart" product.id %}" method="POST">
+        {% csrf_token %}
+        <div class="details">
+            <h1><a href="#">{{ product.product_name }}</a></h1>
+            <div class="rating">
+                <i class="rating__star fa-solid fa-star"></i>
+                <i class="rating__star fa-solid fa-star"></i>
+                <i class="rating__star fa-solid fa-star"></i>
+                <i class="rating__star fa-solid fa-star"></i>
+                <i class="rating__star fa-solid fa-star"></i>
+            </div>
+            <div class="brand">
+                <span>برند : {{ product.brand }}</span>
+            </div>
+            <p>{{ product.description }}</p>
+            {% if  product.off_price > 0 %}
+                <h1>قیمت تخفیف: <a href="#">{{ product.off_price }}</a> تومان </h1>
+                <h1>قیمت: <a href="#">{{ product.price }}</a> تومان </h1>
+            {%else%}
+                <h1>قیمت: <a href="#">{{ product.price }}</a> تومان </h1>
+            {%endif%}
+            <div class="select">
+                <select name="" id="" required>
+                    <option value="" disabled selected hidden>انتخاب رنگ:</option>
+                    {% for i in product.variation_set.colors %}
+                    <option value="{{ i.variation_value |lower }}">{{ i.variation_value |capfirst }}</option>
+                    {%endfor%}
+                </select>
+                <select name="" id="" required>
+                    <option value="" disabled selected hidden>انتخاب سایز:</option>
+                    {% for i in product.variation_set.sizes %}
+                    <option value="{{ i.variation_value |lower }}">{{ i.variation_value |capfirst }}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            <div class="cart">
+                {% if product.stock == 0 %}
+                <p>ناموجود</p>
+                {%else%}
+                <button type="submit">
+                    <span>افزودن به سبد خرید</span>
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </button>
+               {%endif%}
+            </div>
+        </div>
+        </form>
+    </section>
+    <section class="review">
+        <form action="{% url 'submit_review' product.id %}" method="POST">
+            {% csrf_token %}
+        <div class="write-review">
+            <h1>نظرتان را بنویسید</h1>
+            <span>چه امتیازی به این محصول میدهید؟</span>
+            <div class="rating">
+                <i name="rating" class="rating__star fa-solid fa-star"></i>
+                <i name="rating" class="rating__star fa-solid fa-star"></i>
+                <i name="rating" class="rating__star fa-solid fa-star"></i>
+                <i name="rating" class="rating__star fa-solid fa-star"></i>
+                <i name="rating" class="rating__star fa-solid fa-star"></i>
+            </div>
+
+                <label for="">موضوع:</label>
+                <input class="input-type" name="subject" type="text">
+
+
+                <label for="">نظرتان:</label>
+                <textarea class="input-rewie" name="review" rows="4" type="textarea"></textarea>
+
+            {% if user.is_authenticated %}
+                {% if orderproduct %} 
+                <button type="submit" value="Submit Review">sabt</button>
+                {%else%}
+                    <span>شما باید این محصول رو خرید کنید تا بتوانید نظر بگذارید</span>
+                {%endif%}
+            {%else%}
+                <P><a href="{% url 'login' %}">ورود</a>شما باید وارد شوید تا بتوانید نظر خود را بگذارید</P>
+             {%endif%}
+        </div>
+        </form>
+        <div class="customer-review">
+            <h1>نظرات کاربران</h1>
+            <div class="rat">
+                <div class="rating">
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                </div>
+                <span>{{product.countReview}} نظر</span>
+            </div>
+            {% for review in reviews %}
+            <div class="rewiews-card">
+                <h1>{{review.user.first_name}} {{review.user.last_name}}</h1>
+                <div class="rating">
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                    <i class="rating__star fa-solid fa-star"></i>
+                </div>
+                <p class="first">{{review.subject}}</p>
+                <p class="second">{{review.review}}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    </div>
+    <script src="/static/js/product-detail.js"></script>
+</body>
+</html>
