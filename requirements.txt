@@ -1,0 +1,8 @@
+Django==4.1.4
+django-phonenumber-field==7.2.0
+phonenumbers==8.13.0
+python-decouple==3.8
+django-session-timeout==0.1.0
+Pillow==10.1.0
+django-crispy-forms==2.1
+crispy-bootstrap5==0.7
