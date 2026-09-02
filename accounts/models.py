@@ -23,7 +23,7 @@ class AcoountsManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self,first_name,phone_number,last_name,email,username,password):
+    def create_superuser(self, email, username, password, first_name='Admin', last_name='User', phone_number='00000000000'):
         user=self.create_user(
             email=email,
             username=username,
@@ -39,6 +39,7 @@ class AcoountsManager(BaseUserManager):
         user.is_admin=True
 
         user.save(using=self._db)
+        return user
 
 class Accounts(AbstractBaseUser):
     first_name=models.CharField(max_length=50 , blank=True)
