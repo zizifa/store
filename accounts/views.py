@@ -52,7 +52,7 @@ def register(request):
     }
     return render(request,"register.html",context)
 
-def login(request):
+def user_login(request):
     if request.method=='POST':
 
         phone_number = request.POST.get('phone_number')

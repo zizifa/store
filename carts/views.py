@@ -133,7 +133,7 @@ def remove_cart(request,product_id,cart_item_id):
             cart_item.save()
         else:
             cart_item.dalate()
-            cart_item.save()
+            
     except:
         pass
     return redirect("cart")

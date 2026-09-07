@@ -38,7 +38,7 @@ class Order(models.Model):
     ip=models.CharField(max_length=20,blank=True)
     is_ordered=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
-    updated_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.first_name
@@ -55,9 +55,9 @@ class OrderProduct(models.Model):
     size=models.CharField(max_length=10)
     quantity=models.IntegerField()
     product_price=models.FloatField()
-    ordered=models.BooleanField()
+    ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.product.product_name

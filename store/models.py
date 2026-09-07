@@ -75,7 +75,7 @@ class ReviewRating(models.Model):
     ip=models.CharField(max_length=20,blank=True)
     status=models.BooleanField(default=True)
     crated_at=models.DateTimeField(auto_now_add=True)
-    updated_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.subject
@@ -88,7 +88,7 @@ class ProductGallery(models.Model):
     def __str__(self):
         return self.product.product_name
 
-        class Meta:
-            verbose_name = 'productgallery'
-            verbose_name_plural = 'product gallery'
+    class Meta:
+        verbose_name = 'productgallery'
+        verbose_name_plural = 'product gallery'
 

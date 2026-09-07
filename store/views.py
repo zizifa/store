@@ -81,17 +81,21 @@ def product_detail(request,category_slug,product_slug):
     return render(request , "product-detail.html",context)
 
 def search(request):
-    if 'keyword' in request.GET:
-        keyword=request.GET["keyword"]
-        if keyword:
-            products=Product.objects.order_by("-created_at").filter(Q(descriptions__icontains=keyword)|Q( product_name__icontains=keyword ) |Q( brand__icontains=keyword ))
-            products_count = products.count()
-        context={
-            "products":products,
-            "products_count":products_count,
-        }
+    keyword = request.GET.get('keyword', '')
+    if keyword:
+        products = Product.objects.order_by("-created_at").filter(
+            Q(descriptions__icontains=keyword) | Q(product_name__icontains=keyword) | Q(brand__icontains=keyword)
+        )
+        products_count = products.count()
+    else:
+        products = Product.objects.none()
+        products_count = 0
 
-    return render(request,"store.html",context)
+    context = {
+        "products": products,
+        "products_count": products_count,
+    }
+    return render(request, "store.html", context)
 
 
 def submit_review(request, product_id):
@@ -118,15 +122,14 @@ def submit_review(request, product_id):
                 return redirect(url)
 
 def filter_price(request):
-    min_price = request.GET['min_price']
-    max_peice = request.GET['max_price']
-    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+    min_price = request.GET.get('min_price', 0)
+    max_price = request.GET.get('max_price', 999999999)
+    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_price)
 
-    context={
-        "price_filter":price_filter,
+    context = {
+        "price_filter": price_filter,
     }
-
-    return render(request,'store.html',context)
+    return render(request, 'store.html', context)
 
 def size_filter(request):
     XS = request.GET['XS']
@@ -148,30 +151,25 @@ def size_filter(request):
     return render(request, 'store.html', context)
 
 def filter(request):
-    min_price = request.GET['min_price']
-    max_peice = request.GET['max_price']
-    category=request.GET['category']
-    print(type(category))
-    size=request.GET['size']
+    min_price = request.GET.get('min_price', 0)
+    max_price = request.GET.get('max_price', 999999999)
+    category = request.GET.get('category', '')
+    size = request.GET.get('size', '')
 
-    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_peice)
+    price_filter = Product.objects.filter(is_available=True, price__gte=min_price, price__lte=max_price)
 
     product_value = list(Variation.objects.filter(variation_value=size).values())
-    product_list=[]
+    product_list = []
     for i in product_value:
-        id=i["product_id"]
+        id = i["product_id"]
         product_list.append(Product.objects.get(id=id))
 
-    categores=Category.objects.filter(category_name=category)
-    print(categores)
+    categores = Category.objects.filter(category_name=category)
     category_product = Product.objects.filter(category=categores, is_available=True)
 
-
-    context={
-        "price_filter":price_filter,
+    context = {
+        "price_filter": price_filter,
         "size_filter": product_list,
-        #"categores":categores,
-        'category_product':category_product,
+        'category_product': category_product,
     }
-
     return render(request, 'store.html', context)
