@@ -50,6 +50,10 @@ Server-rendered Django e-commerce application.
 Settings are loaded from environment variables via `python-decouple` (see `.env`).
 Keep `.env` local; only `.env.example` with placeholder values is committed.
 
+PostgreSQL is the target database and runs locally via Docker
+(`infra/docker-compose.yml`); see `docs/development/local-setup.md` for the
+workflow. SQLite remains a temporary fallback.
+
 ## Development notes
 
 See `docs/` for architecture, feature contracts, and Cline workflow rules

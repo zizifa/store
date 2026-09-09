@@ -1,0 +1,34 @@
+# Local PostgreSQL ONLY — not for production.
+#
+# Usage (from the repository root):
+#   docker compose --env-file .env -f infra/docker-compose.yml up -d
+#   docker compose --env-file .env -f infra/docker-compose.yml ps
+#   docker compose --env-file .env -f infra/docker-compose.yml down
+#
+# Credentials come from the environment (.env). POSTGRES_PASSWORD is REQUIRED —
+# it is intentionally not defaulted here so no credential is hardcoded.
+# PostgreSQL data lives in the named volume `store_postgres_data`, which is
+# persistent across container restarts.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: store-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-store}
+      POSTGRES_USER: ${POSTGRES_USER:-store}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (local development credential only)}
+    ports:
+      # Loopback-only bind: never expose PostgreSQL publicly.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-store} -d ${POSTGRES_DB:-store}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
