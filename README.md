@@ -5,7 +5,7 @@ Server-rendered Django e-commerce application.
 ## Stack
 
 - Python 3.12+
-- Django 4.2 (a later Django 5.2 upgrade is planned but not yet performed)
+- Django 5.2 LTS (upgraded from Django 4.2 in Phase 1)
 - Server-rendered Django Templates (SSR); JSON/AJAX only where interaction requires it
 - SQLite for local development; PostgreSQL is the target production database
 - Phone-number based accounts; inventory and order flows are server-authoritative

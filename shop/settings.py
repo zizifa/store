@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import urllib.parse
 from decouple import config
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +28,11 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1',
+    cast=lambda v: [host.strip() for host in v.split(',') if host.strip()],
+)
 
 
 # Application definition
@@ -90,12 +96,53 @@ AUTH_USER_MODEL="accounts.Accounts"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+#
+# Configured from environment variables.
+# Preferred: set DATABASE_URL, e.g.
+#   postgresql://store:store_password@localhost:5432/store
+# If DATABASE_URL is unset, falls back to individual DB_* variables, then to a
+# local SQLite file for zero-configuration development.
+
+def _env(name, default=None, **kwargs):
+    """Read an env value via decouple, treating empty strings as unset."""
+    value = config(name, default=None, **kwargs)
+    if value is None or value == '':
+        return default
+    return value
+
+
+def _database_config():
+    """Build the DATABASES['default'] dict from environment variables."""
+    url = _env('DATABASE_URL')
+    if url:
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme in ('postgres', 'postgresql'):
+            return {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': parsed.path.lstrip('/'),
+                'USER': urllib.parse.unquote(parsed.username or ''),
+                'PASSWORD': urllib.parse.unquote(parsed.password or ''),
+                'HOST': parsed.hostname or 'localhost',
+                'PORT': parsed.port or '5432',
+            }
+        if parsed.scheme == 'sqlite':
+            return {'ENGINE': 'django.db.backends.sqlite3', 'NAME': parsed.path.lstrip('/')}
+        raise ImproperlyConfigured(f'Unsupported DATABASE_URL scheme: {parsed.scheme!r}')
+
+    engine = _env('DB_ENGINE', default='django.db.backends.sqlite3')
+    cfg = {'ENGINE': engine, 'NAME': _env('DB_NAME', default=str(BASE_DIR / 'db.sqlite3'))}
+    if engine.endswith('postgresql'):
+        cfg.update({
+            'USER': _env('DB_USER', default=''),
+            'PASSWORD': _env('DB_PASSWORD', default=''),
+            'HOST': _env('DB_HOST', default='localhost'),
+            'PORT': _env('DB_PORT', default='5432'),
+        })
+    return cfg
+
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': _database_config(),
 }
 
 
