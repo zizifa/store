@@ -1,26 +1,18 @@
-<<<<<<< HEAD
-venv/
-__pycache__/
-*.pyc
-.env
-db.sqlite3
-.idea/
-mediafiles/
-staticfiles/
-photos/
-=======
-# Django #
+# ---- Django ---- #
 *.log
 *.pot
 *.pyc
 __pycache__
 db.sqlite3
 media
+mediafiles/
+staticfiles/
+photos/
 
-# Backup files #
+# ---- Backup files ---- #
 *.bak
 
-# If you are using PyCharm #
+# ---- If you are using PyCharm ---- #
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -42,8 +34,6 @@ media
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
-# Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
 
@@ -56,9 +46,9 @@ out/
 # JIRA plugin
 atlassian-ide-plugin.xml
 
-# Python #
+# ---- Python ---- #
 *.py[cod]
-*$py.class
+*.class
 
 # Distribution / packaging
 .Python build/
@@ -107,11 +97,11 @@ celerybeat-schedule.*
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# ---- Environments ---- #
 .env
 .venv
-env/
 venv/
+env/
 ENV/
 env.bak/
 venv.bak/
@@ -132,19 +122,17 @@ venv.bak/
 # sftp configuration file
 sftp-config.json
 
-# Package control specific files Package
+# Package control specific files
 Control.last-run
 Control.ca-list
 Control.ca-bundle
 Control.system-ca-bundle
 GitHub.sublime-settings
 
-# Visual Studio Code #
+# ---- Visual Studio Code ---- #
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 .history
->>>>>>> origin/master
-staticfiles/

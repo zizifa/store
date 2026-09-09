@@ -1,18 +1,56 @@
-# Store — Cline Configuration Pack
+# Store
 
-Copy the contents of this directory into the repository root.
+Server-rendered Django e-commerce application.
 
-## Files
-- `.clinerules/00-store-core.md` — always-on project policy and cost controls.
-- `.clinerules/10-backend.md` — conditional backend rules.
-- `.clinerules/20-frontend-template.md` — conditional Template/asset rules.
-- `.clinerules/30-critical-domains.md` — conditional security/transaction rules.
-- `.clineignore` — files and directories Cline should not load by default.
-- `docs/cline/model-routing-policy.md` — model selection/cost policy.
-- `docs/cline/context-minimization.md` — practical rules for keeping context small.
+## Stack
 
-## Recommended placement
-Put the `.clinerules/` directory and `.clineignore` at the repository root so Cline applies the workspace rules automatically.
+- Python 3.12+
+- Django 4.2 (a later Django 5.2 upgrade is planned but not yet performed)
+- Server-rendered Django Templates (SSR); JSON/AJAX only where interaction requires it
+- SQLite for local development; PostgreSQL is the target production database
+- Phone-number based accounts; inventory and order flows are server-authoritative
 
-## Important
-Keep `.env`, database files, media uploads, build output, logs, and other generated artifacts out of model context. Keep the ignore list under version control, but never commit actual secrets.
+## Project layout
+
+- `manage.py` — Django CLI entry point
+- `shop/` — project settings, URLs, WSGI configuration
+- `core/`, `accounts/`, `store/`, `carts/`, `order/` — application packages
+
+## Local setup
+
+1. Create and activate a virtual environment:
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate    # Windows: venv\Scripts\activate
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Configure environment variables:
+
+   ```bash
+   cp .env.example .env
+   # then edit .env and set a real SECRET_KEY
+   ```
+
+4. Run migrations and start the server:
+
+   ```bash
+   python manage.py migrate
+   python manage.py runserver
+   ```
+
+## Configuration
+
+Settings are loaded from environment variables via `python-decouple` (see `.env`).
+Keep `.env` local; only `.env.example` with placeholder values is committed.
+
+## Development notes
+
+See `docs/` for architecture, feature contracts, and Cline workflow rules
+(`docs/cline/`) used by the project.
