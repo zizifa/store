@@ -1,0 +1,86 @@
+# Cline context minimization / safety
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.secrets/
+secrets/
+
+# Git internals
+.git/
+
+# Python environments / caches
+.venv/
+venv/
+env/
+**/__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node dependencies and build output
+node_modules/
+**/node_modules/
+dist/
+build/
+out/
+coverage/
+.nyc_output/
+*.map
+*.min.js
+*.min.css
+
+# Django generated/static output
+staticfiles/
+media/
+
+# Local databases / dumps / backups
+*.sqlite3
+*.sqlite3-journal
+*.db
+*.dump
+*.sql.gz
+backups/
+
+# Logs / runtime artifacts
+*.log
+logs/
+run/
+tmp/
+*.pid
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Archives / large binaries
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+*.iso
+*.mp4
+*.mov
+*.avi
+
+# Large data files unless the task explicitly requires them
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+
+# Generated docs/render artifacts
+arch_render/
+docx_render/
+rendered/
