@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="section-conten padding-y" style="min-height:84vh">
+
+  <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
+    <div class="card-body">
+      <h4 class="card-title mb-4">Sign in</h4>
+      {% include 'alerts.html' %}
+
+      <!-- Hidden form so Django sets the csrftoken cookie used by our AJAX calls. -->
+      <form style="display:none;">{% csrf_token %}</form>
+
+      <!-- Step 1: request OTP -->
+      <div id="step-phone">
+        <form id="otp-request-form" novalidate>
+          <div class="form-group">
+            <input type="tel" class="form-control" id="phone-input"
+                   placeholder="Phone number" name="phone_number"
+                   autocomplete="tel" autofocus required>
+          </div>
+          <input type="hidden" id="next-input" value="{{ next_url|default:'' }}">
+          <div id="request-error" class="text-danger small mb-2" role="alert"></div>
+          <button type="submit" id="send-code-btn" class="btn btn-primary btn-block">Send code</button>
+        </form>
+        <div id="request-progress" class="text-center mt-2" style="display:none;">
+          <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+          <span class="ml-2">Sending code…</span>
+        </div>
+      </div>
+
+      <!-- Step 2: verify OTP -->
+      <div id="step-otp" style="display:none;">
+        <p class="text-muted">
+          Enter the code sent to <strong id="masked-phone"></strong>
+        </p>
+        <form id="otp-verify-form" novalidate>
+          <input type="hidden" id="verify-phone-input">
+          <input type="hidden" id="verify-next-input">
+          <div class="form-group">
+            <input type="text" class="form-control" id="otp-input"
+                   placeholder="6-digit code" name="code"
+                   inputmode="numeric" maxlength="6"
+                   autocomplete="one-time-code" required>
+          </div>
+          <div id="verify-error" class="text-danger small mb-2" role="alert"></div>
+          <button type="submit" id="verify-btn" class="btn btn-primary btn-block">Verify</button>
+        </form>
+        <div class="text-center mt-3">
+          <button type="button" id="resend-btn" class="btn btn-link">Resend code</button>
+          <span id="resend-timer" class="text-muted small"></span>
+        </div>
+        <p class="text-center mt-2">
+          <a href="#" id="change-phone-link" class="small">Use a different number</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  function getCookie(name) {
+    var match = document.cookie.match('(^|;)\s*' + name + '\s*=\s*([^;]+)');
+    return match ? match.pop() : '';
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  var stepPhone = document.getElementById('step-phone');
+  var stepOtp = document.getElementById('step-otp');
+  var phoneInput = document.getElementById('phone-input');
+  var nextInput = document.getElementById('next-input');
+  var requestError = document.getElementById('request-error');
+  var requestProgress = document.getElementById('request-progress');
+  var verifyError = document.getElementById('verify-error');
+  var maskedPhoneEl = document.getElementById('masked-phone');
+  var verifyPhoneInput = document.getElementById('verify-phone-input');
+  var verifyNextInput = document.getElementById('verify-next-input');
+  var resendTimer = document.getElementById('resend-timer');
+
+  function maskPhone(raw) {
+    // raw is the E.164 number (e.g. +989120000000)
+    if (!raw) return '';
+    return raw.slice(0, 4) + '****' + raw.slice(-4);
+  }
+
+  function showPhone() {
+    var phone = verifyPhoneInput.value;
+    maskedPhoneEl.textContent = maskPhone(phone);
+  }
+
+  function requestOtp(resend) {
+    requestError.textContent = '';
+    if (resend) resendTimer.textContent = '';
+    var phone = phoneInput.value.trim();
+    if (!phone) { requestError.textContent = 'Please enter your phone number.'; return; }
+
+    requestProgress.style.display = 'block';
+    document.getElementById('send-code-btn').disabled = true;
+
+    fetch('{% url "api_otp_request" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ phone_number: phone, purpose: 'LOGIN' })
+    })
+    .then(function (r) { return r.json().then(function (data) { return { status: r.status, data: data }; }); })
+    .then(function (res) {
+      requestProgress.style.display = 'none';
+      document.getElementById('send-code-btn').disabled = false;
+      if (res.data.ok) {
+        verifyPhoneInput.value = phone;
+        verifyNextInput.value = nextInput.value;
+        stepPhone.style.display = 'none';
+        stepOtp.style.display = 'block';
+        showPhone();
+        startResendTimer(60);
+        document.getElementById('otp-input').focus();
+      } else {
+        requestError.textContent = res.data.message || 'Could not send code.';
+      }
+    })
+    .catch(function () {
+      requestProgress.style.display = 'none';
+      document.getElementById('send-code-btn').disabled = false;
+      requestError.textContent = 'Network error. Please try again.';
+    });
+  }
+
+  function startResendTimer(seconds) {
+    var btn = document.getElementById('resend-btn');
+    btn.disabled = true;
+    resendTimer.textContent = ' (' + seconds + 's)';
+    var timer = setInterval(function () {
+      seconds -= 1;
+      if (seconds <= 0) {
+        clearInterval(timer);
+        resendTimer.textContent = '';
+        btn.disabled = false;
+      } else {
+        resendTimer.textContent = ' (' + seconds + 's)';
+      }
+    }, 1000);
+  }
+
+  function verifyOtp() {
+    verifyError.textContent = '';
+    var phone = verifyPhoneInput.value;
+    var code = document.getElementById('otp-input').value.trim();
+    if (!code) { verifyError.textContent = 'Please enter the 6-digit code.'; return; }
+
+    document.getElementById('verify-btn').disabled = true;
+
+    fetch('{% url "api_otp_verify" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        phone_number: phone,
+        code: code,
+        purpose: 'LOGIN',
+        next: verifyNextInput.value
+      })
+    })
+    .then(function (r) { return r.json().then(function (data) { return { status: r.status, data: data }; }); })
+    .then(function (res) {
+      document.getElementById('verify-btn').disabled = false;
+      if (res.data.ok) {
+        window.location.href = res.data.next || '{% url "dashboard" %}';
+      } else {
+        verifyError.textContent = res.data.message || 'Invalid or expired code.';
+      }
+    })
+    .catch(function () {
+      document.getElementById('verify-btn').disabled = false;
+      verifyError.textContent = 'Network error. Please try again.';
+    });
+  }
+
+  document.getElementById('otp-request-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    requestOtp(false);
+  });
+  document.getElementById('otp-verify-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    verifyOtp();
+  });
+  document.getElementById('resend-btn').addEventListener('click', function () {
+    requestOtp(true);
+  });
+  document.getElementById('change-phone-link').addEventListener('click', function (e) {
+    e.preventDefault();
+    stepOtp.style.display = 'none';
+    stepPhone.style.display = 'block';
+    phoneInput.focus();
+  });
+})();
+</script>
+
+{% endblock %}

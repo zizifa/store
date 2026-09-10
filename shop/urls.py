@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from core import views
+from accounts import api_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -29,4 +30,13 @@ urlpatterns = [
     path('accounts/',include("accounts.urls")),
     path('orders/',include("order.urls")),
 ]
+
+# Passwordless customer OTP authentication JSON API.
+urlpatterns += [
+    path('api/v1/auth/otp/request/', api_views.api_otp_request, name='api_otp_request'),
+    path('api/v1/auth/otp/verify/', api_views.api_otp_verify, name='api_otp_verify'),
+    path('api/v1/auth/logout/', api_views.api_logout, name='api_logout'),
+    path('api/v1/auth/me/', api_views.api_me, name='api_me'),
+]
+
 urlpatterns = urlpatterns+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

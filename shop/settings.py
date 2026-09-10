@@ -93,6 +93,28 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 AUTH_USER_MODEL="accounts.Accounts"
 
+# OTP Configuration
+OTP_TTL_SECONDS = config('OTP_TTL_SECONDS', default=120, cast=int)  # 2 minutes
+OTP_MAX_ATTEMPTS = config('OTP_MAX_ATTEMPTS', default=5, cast=int)
+OTP_RESEND_COOLDOWN_SECONDS = config('OTP_RESEND_COOLDOWN_SECONDS', default=60, cast=int)  # 60 seconds
+OTP_LENGTH = config('OTP_LENGTH', default=6, cast=int)
+
+# SMS provider selection for OTP delivery.
+# 'console' prints the OTP (development only). In production (DEBUG=False) set
+# this to the dotted path of an accounts.services.otp.SMSProvider subclass;
+# the console provider then raises ImproperlyConfigured instead of leaking OTPs.
+SMS_PROVIDER = config('SMS_PROVIDER', default=None)
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'accounts.authentication.PhoneOTPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Customer authentication entry points (passwordless OTP login).
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

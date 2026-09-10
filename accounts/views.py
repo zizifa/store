@@ -1,19 +1,20 @@
-from django.shortcuts import render ,redirect,get_object_or_404
-from .forms import RegisterForm,UserForm,ProfileForm
-from django.contrib.auth import authenticate
-from .models import Accounts ,Profile
-from carts.models import CartItem,Cart
-from carts.views import _cart_id
-from django.contrib import messages ,auth
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
-from .authentication import EmailBackend
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
-from order.models import Order,OrderProduct
+from django.contrib.auth import login as auth_login
+from django.views.decorators.http import require_http_methods
+from django.core.exceptions import ValidationError
+from django.utils.http import url_has_allowed_host_and_scheme
+import json
+
+from .forms import RequestOTPForm, VerifyOTPForm
+from .models import Accounts, Profile
+from carts.models import CartItem, Cart
+from carts.views import _cart_id
+from .authentication import PhoneOTPBackend
+from .services.otp import send_otp, verify_otp, OTPServiceError
+from order.models import Order, OrderProduct
 
 def register(request):
     if request.method=="POST":
@@ -282,3 +283,136 @@ def order_detail(request,order_id):
         'total_Price':total_Price,
     }
     return render(request,'order_details.html',context)
+
+
+# ==================== OTP Authentication Views ====================
+
+@require_http_methods(["GET", "POST"])
+def otp_login_request(request):
+    """View to request OTP for login."""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        form = RequestOTPForm(request.POST)
+        if form.is_valid():
+            phone = form.cleaned_data['phone_number']
+            purpose = form.cleaned_data.get('purpose', 'LOGIN')
+            
+            try:
+                challenge, code = send_otp(phone, purpose)
+                messages.info(request, f'OTP sent to {phone}. Use code: {code}')
+                request.session['pending_otp_phone'] = phone
+                request.session['pending_otp_purpose'] = purpose
+                return redirect('otp_verify')
+            except ValidationError as e:
+                messages.error(request, str(e))
+            except OTPServiceError as e:
+                messages.error(request, str(e))
+    else:
+        form = RequestOTPForm()
+    
+    context = {'form': form}
+    return render(request, 'otp_login_request.html', context)
+
+
+@require_http_methods(["GET", "POST"])
+def otp_login_verify(request):
+    """View to verify OTP and complete login."""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    
+    phone = request.session.get('pending_otp_phone')
+    purpose = request.session.get('pending_otp_purpose', 'LOGIN')
+    
+    if not phone:
+        messages.error(request, 'No pending OTP found. Please request one.')
+        return redirect('otp_login')
+    
+    if request.method == 'POST':
+        form = VerifyOTPForm(request.POST)
+        if form.is_valid():
+            phone_normalized = form.cleaned_data['phone_number']
+            code = form.cleaned_data['otp']
+            
+            try:
+                user = verify_otp(phone_normalized, purpose, code)
+                if user:
+                    # Log in the user
+                    auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    
+                    # Clear pending session data
+                    request.session.pop('pending_otp_phone', None)
+                    request.session.pop('pending_otp_purpose', None)
+                    
+                    messages.success(request, 'Login successful!')
+                    
+                    # Handle cart merging if needed
+                    if 'cart_id' in request.session:
+                        # Merge cart items
+                        pass
+                    
+                    # Redirect to next parameter or default
+                    next_url = form.cleaned_data.get('next') or 'dashboard'
+                    return redirect(next_url)
+                else:
+                    messages.error(request, 'Invalid or expired OTP.')
+            except ValidationError as e:
+                messages.error(request, str(e))
+    else:
+        form = VerifyOTPForm(initial={'phone_number': phone})
+    
+    context = {'form': form, 'phone': phone, 'purpose': purpose}
+    return render(request, 'otp_login_verify.html', context)
+
+
+def otp_logout(request):
+    """Logout view using OTP authentication."""
+    auth.logout(request)
+    messages.success(request, 'You have been logged out.')
+    return redirect('login')
+
+
+def otp_dashboard(request):
+    """Dashboard view for authenticated users."""
+    if not request.user.is_authenticated:
+        messages.error(request, 'Please log in to access your dashboard.')
+        return redirect('otp_login')
+    
+    orders_count = Order.objects.filter(user=request.user, is_ordered=True).count()
+    context = {'orders_count': orders_count}
+    return render(request, 'otp_dashboard.html', context)
+
+
+# ==================== Passwordless customer login ====================
+
+def customer_login(request):
+    """Passwordless customer login page. Renders the two-step phone -> OTP UI
+    which talks to the JSON API in accounts.api_views. No password fields."""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    next_url = request.GET.get('next')
+    if next_url and not url_has_allowed_host_and_scheme(
+        next_url, allowed_hosts={request.get_host()}
+    ):
+        next_url = None
+    return render(request, 'otp_login.html', {'next_url': next_url})
+
+
+def register_disabled(request):
+    """Customer registration is no longer password/email based. A customer is
+    created automatically on successful OTP login."""
+    messages.info(request, 'Registration is now done through a phone number code.')
+    return redirect('login')
+
+
+def forgotpassword_disabled(request):
+    """Public password reset is disabled: customers use passwordless OTP login.
+    Staff password resets remain available through the Django admin."""
+    messages.info(request, 'Passwordless login is used; no password reset is needed.')
+    return redirect('login')
+
+
+def resetpassword_disabled(request, *args, **kwargs):
+    messages.error(request, 'Password reset is no longer available for customers.')
+    return redirect('login')
